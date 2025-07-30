@@ -21,7 +21,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (decoded && decoded.exp * 1000 >= Date.now()) {
           setUser(decoded);
           setIsAuthenticated(true);
-          console.log("✅ Token válido. Usuario autenticado.");
         } else {
           console.log("⛔ Token expirado.");
           logout();

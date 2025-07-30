@@ -1,6 +1,7 @@
 // utils/api.ts
 import axios, { AxiosError } from "axios";
 import type { LoginForm, RegisterForm } from '../Interface/auth';
+import type { Mechanic } from "../Interface/Mechanics";
 
 export const login = async (data: LoginForm) => {
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
@@ -52,4 +53,88 @@ export const register = async (data: RegisterForm) => {
 };
 
 
+export const createMechanics = async (data: Mechanic) => {
+  const apiUrl = import.meta.env.VITE_BACKEND_URL;
+  const token = localStorage.getItem("token"); // o donde tengas guardado tu token
+
+  try {
+    const response = await axios.post(`${apiUrl}/mechanic/register`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.mechanic;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+    throw new Error(
+      axiosError.response?.data?.message || "Error al registrar mecánico"
+    );
+  }
+};
+
+export const getAllMechanics = async (id_workshop:string)=>{
+  const apiUrl = import.meta.env.VITE_BACKEND_URL;
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.get(`${apiUrl}/mechanic/all/${id_workshop}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    
+    return response.data.mechanics;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+    throw new Error(
+      axiosError.response?.data?.message || "Error al obtener mecánico"
+    );
+  }
+};
+
+export const deleteMechanic = async (id:string) =>{
+  const apiUrl = import.meta.env.VITE_BACKEND_URL;
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.delete(`${apiUrl}/mechanic/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.message;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+    throw new Error(
+      axiosError.response?.data?.message || "Error al borrar mecánico"
+    );
+  }
+}
+
+export const editMechanic = async (data: Mechanic) =>{
+  const apiUrl = import.meta.env.VITE_BACKEND_URL;
+  const token = localStorage.getItem("token"); // o donde tengas guardado tu token
+
+  try {
+    const response = await axios.put(`${apiUrl}/mechanic/edit`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.message;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+    throw new Error(
+      axiosError.response?.data?.message || "Error al registrar mecánico"
+    );
+  }
+}
 

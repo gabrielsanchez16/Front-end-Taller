@@ -16,15 +16,14 @@ export default function Layout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const location = useLocation();
     const { user,logout } = useAuth();
-    console.log( user);
     const navigate = useNavigate();
     const links = [
         { to: "/", label: "Dashboard", icon: <Home size={18} /> },
         { to: "/ordenes", label: "Órdenes", icon: <ClipboardList size={18} /> },
         { to: "/clientes", label: "Clientes", icon: <Users size={18} /> },
-        { to: "/motocicletas", label: "Motocicletas", icon: <Bike size={18} /> },
+        { to: "/Motorcycles", label: "Motocicletas", icon: <Bike size={18} /> },
         { to: "/servicios", label: "Servicios", icon: <Settings size={18} /> },
-        { to: "/mecanicos", label: "Mecánicos", icon: <Wrench size={18} /> },
+        { to: "/Mechanics", label: "Mecánicos", icon: <Wrench size={18} /> },
     ];
 
     const handleLogout = () => {
@@ -40,7 +39,7 @@ export default function Layout() {
                     <div className="rounded-full p-1 w-fit border border-white">
                         <img
                             src={user.logo || "https://img.freepik.com/vector-gratis/circulo-azul-usuario-blanco_78370-4707.jpg?semt=ais_hybrid&w=740"}
-                            className="rounded-full w-[50px] h-[50px] bg-white"
+                            className="rounded-full w-[50px] h-[50px] bg-white object-contain"
                             alt=""
                         />
                     </div>
@@ -115,7 +114,7 @@ export default function Layout() {
                         <div className="rounded-full p-1 w-fit border border-white">
                             <img
                                 src={user.logo || "https://img.freepik.com/vector-gratis/circulo-azul-usuario-blanco_78370-4707.jpg?semt=ais_hybrid&w=740"}
-                                className="rounded-full w-[30px] h-[30px] bg-white"
+                                className="rounded-full w-[30px] h-[30px] bg-white object-contain"
                                 alt=""
                             />
                         </div>
