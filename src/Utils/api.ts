@@ -74,7 +74,7 @@ export const createMechanics = async (data: Mechanic) => {
   }
 };
 
-export const getAllMechanics = async (id_workshop:string)=>{
+export const getAllMechanics = async (id_workshop: string) => {
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
   const token = localStorage.getItem("token");
 
@@ -86,7 +86,7 @@ export const getAllMechanics = async (id_workshop:string)=>{
       },
     });
 
-    
+
     return response.data.mechanics;
   } catch (error) {
     const axiosError = error as AxiosError<{ message?: string }>;
@@ -96,7 +96,7 @@ export const getAllMechanics = async (id_workshop:string)=>{
   }
 };
 
-export const deleteMechanic = async (id:string) =>{
+export const deleteMechanic = async (id: string) => {
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
   const token = localStorage.getItem("token");
 
@@ -117,7 +117,7 @@ export const deleteMechanic = async (id:string) =>{
   }
 }
 
-export const editMechanic = async (data: Mechanic) =>{
+export const editMechanic = async (data: Mechanic) => {
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
   const token = localStorage.getItem("token"); // o donde tengas guardado tu token
 

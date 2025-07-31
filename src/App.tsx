@@ -6,6 +6,7 @@ import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute';
 import Layout from './Components/Layout/Layout';
 import NotSubscribed from './Views/NotSubscribed/NotSubscribed';
 import Mechanics from './Views/Mechanics/Mechanics';
+import Clients from './Views/Clients/Clients';
 
 const App = () => {
   return (
@@ -18,6 +19,8 @@ const App = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path='/Mechanics' element={<Mechanics/>} />
+          <Route path='/Clients' element={<Clients/>} />
+
           {/* Agrega más rutas aquí */}
         </Route>
       </Route>
