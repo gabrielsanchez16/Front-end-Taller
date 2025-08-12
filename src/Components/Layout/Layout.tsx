@@ -3,7 +3,6 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import {
     Menu,
     Home,
-    ClipboardList,
     Users,
     Bike,
     Settings,
@@ -19,10 +18,10 @@ export default function Layout() {
     const navigate = useNavigate();
     const links = [
         { to: "/", label: "Dashboard", icon: <Home size={18} /> },
-        { to: "/ordenes", label: "Órdenes", icon: <ClipboardList size={18} /> },
+        // { to: "/ordenes", label: "Órdenes", icon: <ClipboardList size={18} /> },
         { to: "/Clients", label: "Clientes", icon: <Users size={18} /> },
         { to: "/Motorcycles", label: "Motocicletas", icon: <Bike size={18} /> },
-        { to: "/servicios", label: "Servicios", icon: <Settings size={18} /> },
+        { to: "/Services", label: "Servicios", icon: <Settings size={18} /> },
         { to: "/Mechanics", label: "Mecánicos", icon: <Wrench size={18} /> },
     ];
 

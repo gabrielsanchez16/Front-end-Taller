@@ -4,9 +4,8 @@ import { UserCog, Trash2, Pencil, Phone, MessageCircle } from "lucide-react";
 import { createClients, deleteClient, editClient, getAllClients } from "../../Utils/apiClients";
 
 import { useAuth } from "../../hooks/useAuth";
-import type { Client } from "../../Interface/Clients";
 import { IdentificationIcon } from "@heroicons/react/24/outline";
-
+import type { Client } from "../../Interface/Clients";
 
 
 const Clients = () => {
