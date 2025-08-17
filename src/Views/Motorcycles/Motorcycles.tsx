@@ -263,18 +263,24 @@ const Motorcycles = () => {
                                 <td className="px-4 py-3">{motorcycle.owner?.name}</td>
                                 <td className="px-4 py-3">{motorcycle.brand?.name}</td>
                                 <td className="px-4 py-3">
-                                    {Array.isArray(motorcycle?.work_orders) && motorcycle.work_orders.length > 0 ? (
-                                        motorcycle.work_orders.map((workOrder: WorkOrder, key: number) => (
-                                            <div key={key}>
-                                                <Link to={`/Order/${workOrder.id}`} className="text-blue-600 underline">
+                                    <div className="relative h-20 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                                        <div className="flex flex-col gap-1">
+                                            {Array.isArray(motorcycle?.work_orders) && motorcycle.work_orders.length > 0 ? 
+                                                motorcycle.work_orders.map((workOrder: WorkOrder, key: number) => (
+                                                <Link
+                                                    key={key}
+                                                    to={`/Order?id=${workOrder.id}`}
+                                                    className="text-blue-600 underline"
+                                                >
                                                     {workOrder.title}
                                                 </Link>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <span className="text-gray-500 italic">No tiene órdenes</span>
-                                    )}
+                                            ))
+                                        : ( <span className="text-gray-500 italic">No tiene órdenes</span> )}
+                                        </div>
+                                        <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+                                    </div>
                                 </td>
+
                                 <td className="px-4 py-3 flex justify-center gap-4">
                                     <div className="relative group">
                                         <button

@@ -1,3 +1,5 @@
+
+
 export interface Service{
     id:string,
     name:string,
@@ -5,5 +7,5 @@ export interface Service{
     brand:string,
     quantity:number,
     id_workshop:string,
-    id_type:string
+    id_type:string,
 }

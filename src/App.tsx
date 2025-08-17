@@ -11,6 +11,7 @@ import Motorcycles from './Views/Motorcycles/Motorcycles';
 import WorkOrderCreate from './Views/WorkOrder/WorkOrderCreate';
 import Services from './Views/Services/Services';
 import { Toaster } from "react-hot-toast";
+import WorkOrderEdit from './Views/WorkOrder/WorkOrderEdit';
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
           <Route path='/Motorcycles' element={<Motorcycles/>} />
           <Route path='/Services' element={<Services/>} />
           <Route path='/Order/create' element={<WorkOrderCreate/>} />
+          <Route path='/Order' element={<WorkOrderEdit/>} />
 
           {/* Agrega más rutas aquí */}
         </Route>

@@ -1,18 +1,33 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Trash2, CardSim, ParkingMeter, Type as Type1, Coins } from "lucide-react";
+import { Trash2, CardSim, ParkingMeter, Type as Type1, Coins, Pencil } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
-import type { Service } from "../../Interface/Service";
 import type { Type } from "../../Interface/Type";
 import { NumberedListIcon } from "@heroicons/react/24/outline";
 import { createService, deleteService, getAllServices } from "../../Utils/apiServices";
 import { getAllTypes } from "../../Utils/apiType";
+import type { Service } from '../../Interface/Service';
+import toast from "react-hot-toast";
+
 
 const Services = () => {
     const [services, setServices] = useState<Service[]>([]);
+    const [service, setService] = useState<Service>()
     const [types, setTypes] = useState<Type[]>([]);
+    const [editingId, setEditingId] = useState<string | null>(null); // 👈 nuevo estado
+
 
     const { user } = useAuth();
+
+    const defaultValues: Service = {
+        id: "",
+        name: "",
+        price: 0,
+        brand: "",
+        quantity: 1,
+        id_type: "",
+        id_workshop: "",
+    };
 
     const {
         register,
@@ -53,24 +68,38 @@ const Services = () => {
 
     const onSubmit = async (data: Service) => {
         try {
-            await createService(data);
-            if (user?.id) {
-                await fetchServices(user?.id);
+            if (editingId) {
+                // actualizar
+                await createService({ ...data, id: editingId }); // 👈 deberías tener un updateService() real
+                toast.success("Servicio actualizado exitosamente");
+            } else {
+                // crear
+                await createService(data);
+                toast.success("Servicio creado exitosamente");
             }
-            alert("Servicio creada exitosamente")
-            reset();
+
+            if (user?.id) {
+                await fetchServices(user.id);
+            }
+            reset(defaultValues);
+            setEditingId(null); // salir de edición
         } catch (error) {
-            console.error("Error creando el Servicio:", error);
-            alert(error);
+            console.error("Error en el servicio:", error);
+            toast.error(String(error));
         }
     };
 
+    const handleEdit = (service: Service) => {
+        reset(service);       // 👈 carga valores en el form
+        setService(service)
+        setEditingId(service.id);
+    };
 
     const handleDelete = async (id: string) => {
         try {
             const response = await deleteService(id);
             setServices((prev) => prev.filter((m) => m.id !== id));
-            alert(response)
+            alert(response);
         } catch (error) {
             console.error("Error borrando el servicio:", error);
             alert("Hubo un error al borrar el servicio.");
@@ -162,32 +191,44 @@ const Services = () => {
                     <input
                         type="text"
                         placeholder="El precio del servicio"
+                        {...register("price", {
+                            setValueAs: (v) => Number(String(v).replace(/\D/g, "")), // convierte a número
+                        })}
+                        defaultValue={editingId ? service?.price : ""}
                         onChange={(e) => {
                             const raw = e.target.value.replace(/\D/g, "");
                             const numericValue = Number(raw);
                             const formatted = new Intl.NumberFormat("es-CO").format(numericValue);
-                            setValue("price", numericValue); // <-- ahora sí es number
-                            e.target.value = `$ ${formatted}`; // valor con formato
+                            setValue("price", numericValue, { shouldValidate: true });
+                            e.target.value = `$ ${formatted}`;
                         }}
                         onBlur={(e) => {
                             const raw = e.target.value.replace(/\D/g, "");
                             const formatted = new Intl.NumberFormat("es-CO").format(Number(raw));
                             e.target.value = `$ ${formatted}`;
                         }}
-                        className={`border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 ${errors.price
-                            ? "border-red-500 ring-red-400"
-                            : "border-gray-300 focus:ring-blue-500"
+                        className={`border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 ${errors.price ? "border-red-500 ring-red-400" : "border-gray-300 focus:ring-blue-500"
                             }`}
                     />
 
+
                 </div>
-                {/* Botón */}
-                <div className="w-full flex justify-end">
+                {/* Botón dinámico */}
+                <div className="w-full flex justify-end gap-2">
+                    {editingId && (
+                        <button
+                            type="button"
+                            onClick={() => { reset(); setEditingId(null); }}
+                            className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition"
+                        >
+                            Cancelar
+                        </button>
+                    )}
                     <button
                         type="submit"
                         className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition w-full sm:w-auto"
                     >
-                        Crear
+                        {editingId ? "Actualizar" : "Crear"}
                     </button>
                 </div>
             </form>
@@ -220,18 +261,18 @@ const Services = () => {
                                 <td className="px-4 py-3">{service.brand}</td>
                                 <td className="px-4 py-3">{service.quantity}</td>
                                 <td className="px-4 py-3 flex justify-center gap-4">
-
-                                    <div className="relative group">
-                                        <button
-                                            onClick={() => handleDelete(service.id)}
-                                            className="text-red-600 cursor-pointer hover:text-red-800"
-                                        >
-                                            <Trash2 size={18} />
-                                        </button>
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-10">
-                                            Eliminar servicio
-                                        </div>
-                                    </div>
+                                    <button
+                                        onClick={() => handleEdit(service)}
+                                        className="text-blue-600 hover:text-blue-800"
+                                    >
+                                        <Pencil size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(service.id)}
+                                        className="text-red-600 hover:text-red-800"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
                                 </td>
 
                             </tr>
