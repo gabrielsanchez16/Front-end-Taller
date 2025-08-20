@@ -9,16 +9,19 @@ import { getAllClients } from "../../Utils/apiClients";
 import type { Client } from "../../Interface/Clients";
 import type { Brand } from "../../Interface/Brands";
 import { getAllBrand } from "../../Utils/apiBrand";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import type { WorkOrder } from '../../Interface/WorkOrder';
-
+import { deleteOrder } from "../../Utils/apiWorkOrder";
+import { toast } from "react-hot-toast";
 
 const Motorcycles = () => {
     const [motorcycles, setMotorcycles] = useState<Motorcycle[]>([]);
     const [clients, setClients] = useState<Client[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
+    const navigate = useNavigate();
     const { user } = useAuth();
 
     const {
@@ -35,7 +38,7 @@ const Motorcycles = () => {
             setClients(responseClients);
         } catch (error) {
             console.error("Error obteniendo clientes:", error);
-            alert("Hubo un error al obtener los clientes.");
+            toast.error("Hubo un error al obtener los clientes.");
         }
     };
 
@@ -45,7 +48,7 @@ const Motorcycles = () => {
             setBrands(responseBrands);
         } catch (error) {
             console.error("Error obteniendo marcas:", error);
-            alert("Hubo un error al obtener las marcas.");
+            toast.error("Hubo un error al obtener las marcas.");
         }
     };
 
@@ -55,7 +58,7 @@ const Motorcycles = () => {
             setMotorcycles(responseMotorcycles);
         } catch (error) {
             console.error("Error obteniendo motocicletas:", error);
-            alert("Hubo un error al obtener los motocicletas.");
+            toast.error("Hubo un error al obtener los motocicletas.");
         }
     };
 
@@ -79,13 +82,13 @@ const Motorcycles = () => {
                     if (user?.id) {
                         await fetchMotorcycles(user?.id);
                     }
-                    alert(response)
+                    toast.success(response)
                     reset();
                     return;
                 } catch (error) {
 
                     console.error("Error editando la motocicleta:", error);
-                    alert("Hubo un error al editar la motocicleta.");
+                    toast.error("Hubo un error al editar la motocicleta.");
                     return;
                 }
 
@@ -95,11 +98,11 @@ const Motorcycles = () => {
             if (user?.id) {
                 await fetchMotorcycles(user?.id);
             }
-            alert("Motocicleta creada exitosamente")
+            toast.success("Motocicleta creada exitosamente")
             reset();
         } catch (error) {
             console.error("Error creando la motocicleta:", error);
-            alert(error);
+            toast.error(String(error));
         }
     };
 
@@ -119,12 +122,25 @@ const Motorcycles = () => {
         try {
             const response = await deleteMotorcycle(id);
             setMotorcycles((prev) => prev.filter((m) => m.id !== id));
-            alert(response)
+            toast.success(response)
         } catch (error) {
             console.error("Error borrando la motorcicleta:", error);
-            alert("Hubo un error al borrar la motocicleta.");
+            toast.error("Hubo un error al borrar la motocicleta.");
         }
     };
+
+    const handleDeleteOrder = async (id: string) => {
+        setLoading(true)
+        try {
+            const response = await deleteOrder(id);
+            toast.success(response);
+            fetchMotorcycles(user?.id || "");
+        } catch {
+            toast.error("Hubo un error al borrar la orden.");
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <div className="p-6 max-w-5xl mx-auto">
@@ -265,21 +281,44 @@ const Motorcycles = () => {
                                 <td className="px-4 py-3">
                                     <div className="relative h-20 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
                                         <div className="flex flex-col gap-1">
-                                            {Array.isArray(motorcycle?.work_orders) && motorcycle.work_orders.length > 0 ? 
+                                            {Array.isArray(motorcycle?.work_orders) && motorcycle.work_orders.length > 0 ? (
                                                 motorcycle.work_orders.map((workOrder: WorkOrder, key: number) => (
-                                                <Link
-                                                    key={key}
-                                                    to={`/Order?id=${workOrder.id}`}
-                                                    className="text-blue-600 underline"
-                                                >
-                                                    {workOrder.title}
-                                                </Link>
-                                            ))
-                                        : ( <span className="text-gray-500 italic">No tiene órdenes</span> )}
+                                                    <div key={key} className="relative group flex items-center justify-between bg-gray-50 rounded-md px-2 py-1 hover:bg-gray-100">
+                                                        {/* Enlace */}
+                                                        <Link
+                                                            to={`/Order?id=${workOrder.id}`}
+                                                            className="text-blue-600 underline"
+                                                        >
+                                                            {workOrder.title}
+                                                        </Link>
+
+                                                        {/* Botones ocultos hasta hover */}
+                                                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button
+                                                                className="px-2 py-1 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                                                onClick={() => navigate(`/Order?id=${workOrder.id}`)}
+                                                            >
+                                                                Editar
+                                                            </button>
+                                                            <button
+                                                                className="px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
+                                                                onClick={() => handleDeleteOrder(workOrder.id)}
+                                                            >
+                                                                Eliminar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <span className="text-gray-500 italic">No tiene órdenes</span>
+                                            )}
                                         </div>
+
+                                        {/* Gradiente inferior */}
                                         <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
                                     </div>
                                 </td>
+
 
                                 <td className="px-4 py-3 flex justify-center gap-4">
                                     <div className="relative group">
@@ -331,6 +370,14 @@ const Motorcycles = () => {
                     </tbody>
                 </table>
             </div>
+             {loading && (
+                <div className="fixed inset-0 bg-black opacity-85 flex flex-col items-center justify-center z-50">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid mb-4"></div>
+                    <p className="text-white text-lg font-semibold">
+                        Cargando, por favor espere...
+                    </p>
+                </div>
+            )}
         </div>
     )
 }

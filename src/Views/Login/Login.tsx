@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 
 
+
 export default function Login() {
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useReactHookForm<LoginForm>();
@@ -40,7 +41,7 @@ export default function Login() {
     <div className="relative min-h-screen flex items-center justify-center bg-black">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{ backgroundImage: `url('https://formaelx.com/media/images/cursos_cursos/curso_area_163.png')` }}
+        style={{ backgroundImage: `url(/mecanicoBack.png)` }}
       ></div>
 
       <div className="relative z-10 w-full max-w-md bg-[#111827] shadow-xl rounded-2xl p-8 border border-gray-200">

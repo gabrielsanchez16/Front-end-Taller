@@ -64,3 +64,25 @@ export const editOrder = async (data:WorkOrder) =>{
         );
     }
 }
+
+
+export const deleteOrder = async (id:string) => {
+    const apiUrl = import.meta.env.VITE_BACKEND_URL;
+    const token = localStorage.getItem("token"); // o donde tengas guardado tu token
+
+    try {
+        const response = await axios.delete(`${apiUrl}/workOrder/delete/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data.message;
+    } catch (error) {
+        const axiosError = error as AxiosError<{ message?: string }>;
+        throw new Error(
+            axiosError.response?.data?.message || "Error al borrar la orden"
+        );
+    }
+}

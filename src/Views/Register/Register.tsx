@@ -6,6 +6,7 @@ import type { RegisterForm } from "../../Interface/auth";
 import { useNavigate } from "react-router";
 
 
+
 export default function Register() {
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useReactHookForm<RegisterForm>();
@@ -42,7 +43,7 @@ export default function Register() {
       <div
         className="absolute inset-0 bg-cover bg-center opacity-20"
         style={{
-          backgroundImage: `url('https://formaelx.com/media/images/cursos_cursos/curso_area_163.png')`,
+          backgroundImage: `url(/mecanicoBack.png)`,
         }}
       ></div>
 

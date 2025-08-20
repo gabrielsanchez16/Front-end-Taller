@@ -13,10 +13,12 @@ import { createWorkOrder } from "../../Utils/apiWorkOrder";
 import { createServiceByWork } from "../../Utils/apiServiceByWork";
 import { registerPhotos } from "../../Utils/apiPhoto";
 import { toast } from "react-hot-toast";
+import ModalService from "../../Components/ModalService/ModalService";
 
 const WorkOrderCreate = () => {
     const location = useLocation();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [modalService, setModalService] = useState(false);
     const searchParams = new URLSearchParams(location.search);
     const [selectedServices, setSelectedServices] = useState<
         (Service & { quantity: number })[]
@@ -55,6 +57,12 @@ const WorkOrderCreate = () => {
         const selectedService = services.find((s) => s.id === selectedId);
         if (!selectedService) return;
 
+        if (selectedService.quantity <= 0) {
+            toast.error(`El servicio ${selectedService.name} no tiene stock disponible`);
+            e.target.value = "";
+            return;
+        }
+
         if (!selectedServices.some((s) => s.id === selectedService.id)) {
             setSelectedServices((prev) => [
                 ...prev,
@@ -66,13 +74,26 @@ const WorkOrderCreate = () => {
     };
 
 
+
     const handleQuantityChange = (id: string, qty: number) => {
         setSelectedServices((prev) =>
-            prev.map((s) =>
-                s.id === id ? { ...s, quantity: qty > 0 ? qty : 1 } : s
-            )
+            prev.map((s) => {
+                if (s.id === id) {
+                    // Buscar stock en services
+                    const serviceStock = services.find((serv) => serv.id === id)?.quantity || 0;
+
+                    if (qty > serviceStock) {
+                        toast.error(`El servicio ${s.name} solo tiene ${serviceStock} en stock`);
+                        return { ...s, quantity: serviceStock }; // limitar al stock
+                    }
+
+                    return { ...s, quantity: qty > 0 ? qty : 1 };
+                }
+                return s;
+            })
         );
     };
+
 
     const handleRemoveService = (id: string) => {
         setSelectedServices((prev) => prev.filter((s) => s.id !== id));
@@ -113,6 +134,7 @@ const WorkOrderCreate = () => {
     const onSubmit = async (data: WorkOrder) => {
         setLoading(true); // Mostrar loading
         try {
+
             const response = await createWorkOrder(data);
             if (response.id) {
                 // Crear servicios asociados
@@ -171,6 +193,14 @@ const WorkOrderCreate = () => {
             ...files.map(file => URL.createObjectURL(file)), // guardamos URLs para preview
         ]);
     };
+
+    const handleModal = () => {
+        setModalService(!modalService)
+        if (modalService && user?.id) {
+            fetchServices(user.id)
+        }
+
+    }
 
 
     return (
@@ -280,6 +310,10 @@ const WorkOrderCreate = () => {
                         }
                     </select>
                     {errors.id_mechanic && <p className="text-sm text-red-500 mt-1">{errors.id_mechanic.message}</p>}
+                </div>
+
+                <div>
+                    <label onClick={handleModal} className="block text-lg font-medium cursor-pointer text-blue-600 underline w-fit">Crear servicio</label>
                 </div>
 
                 <div>
@@ -415,6 +449,11 @@ const WorkOrderCreate = () => {
                     </button>
                 </div>
             </form>
+
+            <ModalService
+                isOpen={modalService}
+                onClose={handleModal}
+            />
 
             {loading && (
                 <div className="fixed inset-0 bg-black opacity-85 flex flex-col items-center justify-center z-50">
