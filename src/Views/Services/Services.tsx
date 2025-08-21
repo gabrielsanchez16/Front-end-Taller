@@ -26,7 +26,7 @@ const Services = () => {
         brand: "",
         quantity: 1,
         id_type: "",
-        id_workshop: "",
+        id_workshop: user?.id || "",
     };
 
     const {
@@ -43,7 +43,7 @@ const Services = () => {
             setTypes(responseTypes);
         } catch (error) {
             console.error("Error obteniendo tipos:", error);
-            alert("Hubo un error al obtener los tipos.");
+            toast.error("Hubo un error al obtener los tipos.");
         }
     };
 
@@ -54,7 +54,7 @@ const Services = () => {
             setServices(responseServices);
         } catch (error) {
             console.error("Error obteniendo Servicios:", error);
-            alert("Hubo un error al obtener los Servicios.");
+            toast.error("Hubo un error al obtener los Servicios.");
         }
     };
 
@@ -99,10 +99,10 @@ const Services = () => {
         try {
             const response = await deleteService(id);
             setServices((prev) => prev.filter((m) => m.id !== id));
-            alert(response);
+            toast.success(response);
         } catch (error) {
             console.error("Error borrando el servicio:", error);
-            alert("Hubo un error al borrar el servicio.");
+            toast.error("Hubo un error al borrar el servicio.");
         }
     };
 

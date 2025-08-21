@@ -5,5 +5,6 @@ export interface ServiceByWork {
     price_unit:number,
     price_total:number,
     id_order:string,
-    id_service:string
+    id_service:string,
+    id_workshop:string
 }

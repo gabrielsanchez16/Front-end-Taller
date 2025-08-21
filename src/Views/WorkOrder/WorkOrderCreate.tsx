@@ -147,6 +147,7 @@ const WorkOrderCreate = () => {
                             price_total: ser.price * ser.quantity,
                             price_unit: ser.price,
                             quantity_order: ser.quantity,
+                            id_workshop: user?.id ?? ""
                         });
                     }
 

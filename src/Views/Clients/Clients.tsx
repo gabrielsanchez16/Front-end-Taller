@@ -6,6 +6,7 @@ import { createClients, deleteClient, editClient, getAllClients } from "../../Ut
 import { useAuth } from "../../hooks/useAuth";
 import { IdentificationIcon } from "@heroicons/react/24/outline";
 import type { Client } from "../../Interface/Clients";
+import toast from "react-hot-toast";
 
 
 const Clients = () => {
@@ -28,7 +29,7 @@ const Clients = () => {
             setClients(responseClients);
         } catch (error) {
             console.error("Error obteniendo clientes:", error);
-            alert("Hubo un error al obtener los clientes.");
+            toast.error("Hubo un error al obtener los clientes.");
         }
     };
 
@@ -46,16 +47,16 @@ const Clients = () => {
                     data.id = editingId
                     const response = await editClient(data)
                     setClients((prev) =>
-                        prev.map((m) => (m.id === editingId ? { ...m, name: data.name, email: data.email, phone: data.phone,identification:data.identification } : m))
+                        prev.map((m) => (m.id === editingId ? { ...m, name: data.name, email: data.email, phone: data.phone, identification: data.identification } : m))
                     );
                     setEditingId(null);
-                    alert(response)
+                    toast.success(response);
                     reset();
                     return;
                 } catch (error) {
 
                     console.error("Error editando cliente:", error);
-                    alert("Hubo un error al editar el cliente.");
+                    toast.error("Hubo un error al editar el cliente.");
                     return;
                 }
 
@@ -72,11 +73,11 @@ const Clients = () => {
             };
 
             setClients((prev) => [...prev, newMechanic]);
-            alert("Cliente creado exitosamente")
+            toast.success("Cliente creado exitosamente");
             reset();
         } catch (error) {
             console.error("Error creando cliente:", error);
-            alert("Hubo un error al crear el cliente.");
+            toast.error("Hubo un error al crear el cliente.");
         }
     };
 
@@ -95,10 +96,10 @@ const Clients = () => {
         try {
             const response = await deleteClient(id);
             setClients((prev) => prev.filter((m) => m.id !== id));
-            alert(response)
+            toast.success(response);
         } catch (error) {
             console.error("Error borrando cliente:", error);
-            alert("Hubo un error al borrar el cliente.");
+            toast.error("Hubo un error al borrar el cliente.");
         }
     };
 
@@ -124,8 +125,8 @@ const Clients = () => {
                         placeholder="Nombre del cliente"
                         {...register("name", { required: "El nombre es obligatorio" })}
                         className={`border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 ${errors.name
-                                ? "border-red-500 ring-red-400"
-                                : "border-gray-300 focus:ring-blue-500"
+                            ? "border-red-500 ring-red-400"
+                            : "border-gray-300 focus:ring-blue-500"
                             }`}
                     />
                     <input type="hidden" value={user?.id} {...register("id_workshop")} />
@@ -139,8 +140,8 @@ const Clients = () => {
                         placeholder="Teléfono ej: 311 603 6878"
                         {...register("phone", { required: "El teléfono es obligatorio" })}
                         className={`border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 ${errors.phone
-                                ? "border-red-500 ring-red-400"
-                                : "border-gray-300 focus:ring-blue-500"
+                            ? "border-red-500 ring-red-400"
+                            : "border-gray-300 focus:ring-blue-500"
                             }`}
                     />
                 </div>
@@ -153,8 +154,8 @@ const Clients = () => {
                         placeholder="ej: user@gmail.com"
                         {...register("email", { required: "El correo es obligatorio" })}
                         className={`border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 ${errors.email
-                                ? "border-red-500 ring-red-400"
-                                : "border-gray-300 focus:ring-blue-500"
+                            ? "border-red-500 ring-red-400"
+                            : "border-gray-300 focus:ring-blue-500"
                             }`}
                     />
                 </div>
@@ -169,8 +170,8 @@ const Clients = () => {
                             required: "La identificación es obligatoria",
                         })}
                         className={`border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 ${errors.identification
-                                ? "border-red-500 ring-red-400"
-                                : "border-gray-300 focus:ring-blue-500"
+                            ? "border-red-500 ring-red-400"
+                            : "border-gray-300 focus:ring-blue-500"
                             }`}
                     />
                 </div>
@@ -204,34 +205,36 @@ const Clients = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {clients?.map((client) => (
-                            <tr key={client.id} className="border-t">
-                                <td className="px-4 py-3">{client.name}</td>
-                                <td className="px-4 py-3">{client.identification}</td>
-                                <td className="px-4 py-3">{client.email}</td>
-                                <td className="px-4 py-3 flex justify-center gap-2">
-                                    <button
-                                        onClick={() => handleEdit(client.id)}
-                                        className="text-blue-600 hover:text-blue-800"
-                                    >
-                                        <Pencil size={18} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(client.id)}
-                                        className="text-red-600 hover:text-red-800"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        {clients?.length === 0 && (
+                        {Array.isArray(clients) && clients.length > 0 ? (
+                            clients.map((client) => (
+                                <tr key={client.id} className="border-t">
+                                    <td className="px-4 py-3">{client.name}</td>
+                                    <td className="px-4 py-3">{client.identification}</td>
+                                    <td className="px-4 py-3">{client.email}</td>
+                                    <td className="px-4 py-3 flex justify-center gap-2">
+                                        <button
+                                            onClick={() => handleEdit(client.id)}
+                                            className="text-blue-600 hover:text-blue-800"
+                                        >
+                                            <Pencil size={18} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(client.id)}
+                                            className="text-red-600 hover:text-red-800"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
                             <tr>
-                                <td colSpan={2} className="text-center px-4 py-5 text-gray-500">
+                                <td colSpan={4} className="text-center px-4 py-5 text-gray-500">
                                     No hay Clientes registrados.
                                 </td>
                             </tr>
                         )}
+
                     </tbody>
                 </table>
             </div>

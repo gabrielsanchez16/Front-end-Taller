@@ -8,6 +8,7 @@ import {
     Settings,
     Wrench,
     LogOut,
+    User,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -23,6 +24,7 @@ export default function Layout() {
         { to: "/Motorcycles", label: "Motocicletas", icon: <Bike size={18} /> },
         { to: "/Services", label: "Servicios", icon: <Settings size={18} /> },
         { to: "/Mechanics", label: "Mecánicos", icon: <Wrench size={18} /> },
+        { to: "/Profile", label: "Perfil", icon: <User size={18} /> },
     ];
 
     const handleLogout = () => {

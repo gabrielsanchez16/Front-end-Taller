@@ -9,6 +9,7 @@ export interface RegisterForm {
     password: string;
     phone: string;
     logo?: FileList;
+    passwordConfirmation?: string;
 }
 
 

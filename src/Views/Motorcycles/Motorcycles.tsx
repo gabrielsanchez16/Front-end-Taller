@@ -119,6 +119,13 @@ const Motorcycles = () => {
     };
 
     const handleDelete = async (id: string) => {
+        const motorcycle = motorcycles.find((m) => m.id === id);
+
+        // 🚨 Verificar si tiene órdenes
+        if (motorcycle && Array.isArray(motorcycle.work_orders) && motorcycle.work_orders.length > 0) {
+            toast.error("No se puede eliminar la moto porque tiene órdenes de trabajo asociadas.");
+            return;
+        }
         try {
             const response = await deleteMotorcycle(id);
             setMotorcycles((prev) => prev.filter((m) => m.id !== id));
@@ -237,10 +244,17 @@ const Motorcycles = () => {
                     >
                         <option value="">El cliente es obligatorio</option>
                         {
-                            clients?.map((client, key) => (
-                                <option value={client.id} key={key}>{client.name}</option>
-                            ))
+                            Array.isArray(clients) && clients.length > 0 ? (
+                                clients.map((client, key) => (
+                                    <option value={client.id} key={key}>
+                                        {client.name}
+                                    </option>
+                                ))
+                            ) : (
+                                <option value="">No hay clientes registrados</option>
+                            )
                         }
+
                     </select>
                 </div>
                 {/* Botón */}
@@ -370,7 +384,7 @@ const Motorcycles = () => {
                     </tbody>
                 </table>
             </div>
-             {loading && (
+            {loading && (
                 <div className="fixed inset-0 bg-black opacity-85 flex flex-col items-center justify-center z-50">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid mb-4"></div>
                     <p className="text-white text-lg font-semibold">

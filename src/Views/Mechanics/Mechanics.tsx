@@ -4,6 +4,7 @@ import { UserCog, Trash2, Pencil } from "lucide-react";
 import { createMechanics, deleteMechanic, editMechanic, getAllMechanics } from "../../Utils/api";
 import type { Mechanic } from "../../Interface/Mechanics";
 import { useAuth } from "../../hooks/useAuth";
+import toast from "react-hot-toast";
 
 
 
@@ -28,7 +29,7 @@ const Mechanics = () => {
             setMechanics(responseMechanics);
         } catch (error) {
             console.error("Error obteniendo mecánicos:", error);
-            alert("Hubo un error al obtener los mecánicos.");
+            toast.error("Hubo un error al obtener los mecánicos.");
         }
     };
 
@@ -49,13 +50,13 @@ const Mechanics = () => {
                         prev.map((m) => (m.id === editingId ? { ...m, name: data.name } : m))
                     );
                     setEditingId(null);
-                    alert(response)
+                    toast.success(response)
                     reset();
                     return;
                 } catch (error) {
 
                     console.error("Error editando mecánico:", error);
-                    alert("Hubo un error al editar el mecánico.");
+                   toast.error("Hubo un error al editar el mecánico.");
                     return;
                 }
 
@@ -68,11 +69,11 @@ const Mechanics = () => {
             };
 
             setMechanics((prev) => [...prev, newMechanic]);
-            alert("Mecanico creado exitosamente")
+            toast.success("Mecanico creado exitosamente");
             reset();
         } catch (error) {
             console.error("Error creando mecánico:", error);
-            alert("Hubo un error al crear el mecánico.");
+            toast.error("Hubo un error al crear el mecánico.");
         }
     };
 
@@ -88,10 +89,10 @@ const Mechanics = () => {
         try {
             const response = await deleteMechanic(id);
             setMechanics((prev) => prev.filter((m) => m.id !== id));
-            alert(response)
+            toast.success(response);
         } catch (error) {
             console.error("Error borrando mecánico:", error);
-            alert("Hubo un error al borrar el mecánico.");
+            toast.error("Hubo un error al borrar el mecánico.");
         }
     };
 

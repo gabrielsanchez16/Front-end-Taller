@@ -63,3 +63,24 @@ export const deleteServiceByWork = async (id:string) =>{
         );
     }
 }
+
+export const getServicesByWorkshop = async (id_workshop: string) => {
+    const apiUrl = import.meta.env.VITE_BACKEND_URL;
+    const token = localStorage.getItem("token"); // o donde tengas guardado tu token
+
+    try {
+        const response = await axios.get(`${apiUrl}/serviceByWorkshop/workshop/${id_workshop}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data.services;
+    } catch (error) {
+        const axiosError = error as AxiosError<{ error?: string }>;
+        throw new Error(
+            axiosError.response?.data?.error || "Error al obtener los servicios del taller"
+        );
+    }
+}

@@ -70,6 +70,7 @@ const WorkOrderEdit = () => {
                     price_total: selectedService.price * selectedService.quantity,
                     price_unit: selectedService.price,
                     quantity_order: selectedService.quantity,
+                    id_workshop: user?.id ?? ""
                 });
                 toast.success("Servicio asignado correctamente")
                 fetchOrder(id_order);
@@ -120,6 +121,7 @@ const WorkOrderEdit = () => {
                 price_total: selectedService.price_unit * qty,
                 price_unit: selectedService.price_unit,
                 quantity_order: qty,
+                id_workshop: user?.id ?? "" 
             });
 
             setSelectedServices(prev =>
