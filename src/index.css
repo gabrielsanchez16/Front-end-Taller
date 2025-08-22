@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+ul,ol{
+    list-style: square;
+    padding: 0 0 0 1rem;
+}

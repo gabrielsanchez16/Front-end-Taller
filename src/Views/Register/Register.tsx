@@ -4,18 +4,20 @@ import { useForm as useReactHookForm } from "react-hook-form";
 import { register as RegisterApi } from '../../Utils/api';
 import type { RegisterForm } from "../../Interface/auth";
 import { useNavigate } from "react-router";
+import Loading from "../../Components/Loading/Loading";
 
 
 
 export default function Register() {
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useReactHookForm<RegisterForm>();
-
+const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const onSubmit = async (form: RegisterForm) => {
+    setLoading(true);
     try {
       await RegisterApi(form);
       setSuccess("Registro exitoso. Redirigiendo a inicio de sesión...");
@@ -34,6 +36,8 @@ export default function Register() {
           setError(null);
         }, 3000); // Limpiar el error después de 3 segundos
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -194,6 +198,11 @@ export default function Register() {
           </a>
         </p>
       </div>
+      {
+        loading && (
+          <Loading/>
+        )
+      }
     </div>
   );
 }

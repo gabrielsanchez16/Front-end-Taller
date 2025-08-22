@@ -53,12 +53,15 @@ const Motorcycles = () => {
     };
 
     const fetchMotorcycles = async (id: string) => {
+        setLoading(true);
         try {
             const responseMotorcycles = await getAllMotorcycles(id);
             setMotorcycles(responseMotorcycles);
         } catch (error) {
             console.error("Error obteniendo motocicletas:", error);
             toast.error("Hubo un error al obtener los motocicletas.");
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -72,6 +75,7 @@ const Motorcycles = () => {
 
 
     const onSubmit = async (data: Motorcycle) => {
+        setLoading(true);
         try {
             if (editingId !== null) {
                 try {
@@ -103,6 +107,8 @@ const Motorcycles = () => {
         } catch (error) {
             console.error("Error creando la motocicleta:", error);
             toast.error(String(error));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -126,6 +132,7 @@ const Motorcycles = () => {
             toast.error("No se puede eliminar la moto porque tiene órdenes de trabajo asociadas.");
             return;
         }
+        setLoading(true);
         try {
             const response = await deleteMotorcycle(id);
             setMotorcycles((prev) => prev.filter((m) => m.id !== id));
@@ -133,6 +140,9 @@ const Motorcycles = () => {
         } catch (error) {
             console.error("Error borrando la motorcicleta:", error);
             toast.error("Hubo un error al borrar la motocicleta.");
+        } finally {
+            setLoading(false);
+
         }
     };
 
@@ -297,7 +307,10 @@ const Motorcycles = () => {
                                         <div className="flex flex-col gap-1">
                                             {Array.isArray(motorcycle?.work_orders) && motorcycle.work_orders.length > 0 ? (
                                                 motorcycle.work_orders.map((workOrder: WorkOrder, key: number) => (
-                                                    <div key={key} className="relative group flex items-center justify-between bg-gray-50 rounded-md px-2 py-1 hover:bg-gray-100">
+                                                    <div
+                                                        key={key}
+                                                        className="relative group flex items-center gap-2 bg-gray-50 rounded-md px-2 py-1 hover:bg-gray-100"
+                                                    >
                                                         {/* Enlace */}
                                                         <Link
                                                             to={`/Order?id=${workOrder.id}`}
@@ -306,8 +319,14 @@ const Motorcycles = () => {
                                                             {workOrder.title}
                                                         </Link>
 
-                                                        {/* Botones ocultos hasta hover */}
-                                                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        {/* Botones */}
+                                                        <div
+                                                            className="
+            flex gap-2
+            opacity-100 sm:opacity-0 sm:group-hover:opacity-100
+            transition-opacity
+          "
+                                                        >
                                                             <button
                                                                 className="px-2 py-1 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600"
                                                                 onClick={() => navigate(`/Order?id=${workOrder.id}`)}
@@ -320,6 +339,17 @@ const Motorcycles = () => {
                                                             >
                                                                 Eliminar
                                                             </button>
+                                                            <button
+                                                                className="px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
+                                                                onClick={() => {
+                                                                    const baseUrl = window.location.origin;
+                                                                    const url = `${baseUrl}/order/view?id=${workOrder.id}&id_user=${user?.id}`;
+                                                                    navigator.clipboard.writeText(url);
+                                                                    toast.success("Link copiado al portapapeles")
+                                                                }}
+                                                            >
+                                                                Copiar link
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 ))
@@ -327,9 +357,8 @@ const Motorcycles = () => {
                                                 <span className="text-gray-500 italic">No tiene órdenes</span>
                                             )}
                                         </div>
-
                                         {/* Gradiente inferior */}
-                                        <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+                                        <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-white/50 to-transparent pointer-events-none"></div>
                                     </div>
                                 </td>
 

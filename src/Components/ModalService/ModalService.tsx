@@ -7,11 +7,13 @@ import { getAllTypes } from "../../Utils/apiType";
 import type { Service } from '../../Interface/Service';
 import toast from "react-hot-toast";
 import { X } from "lucide-react";
+import Loading from "../Loading/Loading";
 
 const ModalService = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
 
     const [types, setTypes] = useState<Type[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null); // 👈 nuevo estado
+    const [loading, setLoading] = useState<boolean>(false);
 
 
     const { user } = useAuth();
@@ -55,6 +57,8 @@ const ModalService = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
 
     const onSubmit = async (data: Service) => {
+        setLoading(true);
+
         try {
             if (editingId) {
                 // actualizar
@@ -72,11 +76,14 @@ const ModalService = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
         } catch (error) {
             console.error("Error en el servicio:", error);
             toast.error(String(error));
+        } finally {
+            setLoading(false);
+
         }
     };
 
 
-  if (!isOpen) return null;
+    if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -102,19 +109,19 @@ const ModalService = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                         placeholder="Nombre del servicio"
                         {...register("name", { required: "El nombre es obligatorio" })}
                         className={`border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 ${errors.name
-                                ? "border-red-500 ring-red-400"
-                                : "border-gray-300 focus:ring-blue-500"
+                            ? "border-red-500 ring-red-400"
+                            : "border-gray-300 focus:ring-blue-500"
                             }`}
                     />
-                     <input type="hidden" value={user?.id} {...register("id_workshop")} />
+                    <input type="hidden" value={user?.id} {...register("id_workshop")} />
 
                     <input
                         type="text"
                         placeholder="Marca"
                         {...register("brand", { required: "La marca es obligatoria" })}
                         className={`border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 ${errors.brand
-                                ? "border-red-500 ring-red-400"
-                                : "border-gray-300 focus:ring-blue-500"
+                            ? "border-red-500 ring-red-400"
+                            : "border-gray-300 focus:ring-blue-500"
                             }`}
                     />
 
@@ -123,16 +130,16 @@ const ModalService = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                         placeholder="Cantidad"
                         {...register("quantity", { required: "Cantidad requerida" })}
                         className={`border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 ${errors.quantity
-                                ? "border-red-500 ring-red-400"
-                                : "border-gray-300 focus:ring-blue-500"
+                            ? "border-red-500 ring-red-400"
+                            : "border-gray-300 focus:ring-blue-500"
                             }`}
                     />
 
                     <select
                         {...register("id_type", { required: "El tipo es obligatorio" })}
                         className={`border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 ${errors.id_type
-                                ? "border-red-500 ring-red-400"
-                                : "border-gray-300 focus:ring-blue-500"
+                            ? "border-red-500 ring-red-400"
+                            : "border-gray-300 focus:ring-blue-500"
                             }`}
                     >
                         <option value="">Selecciona el tipo</option>
@@ -157,8 +164,8 @@ const ModalService = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                             e.target.value = `$ ${formatted}`;
                         }}
                         className={`border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 ${errors.price
-                                ? "border-red-500 ring-red-400"
-                                : "border-gray-300 focus:ring-blue-500"
+                            ? "border-red-500 ring-red-400"
+                            : "border-gray-300 focus:ring-blue-500"
                             }`}
                     />
 
@@ -184,6 +191,11 @@ const ModalService = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                     </div>
                 </form>
             </div>
+            {
+                loading && (
+                    <Loading />
+                )
+            }
         </div>
     );
 }

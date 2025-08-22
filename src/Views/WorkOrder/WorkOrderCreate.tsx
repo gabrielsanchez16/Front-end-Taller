@@ -14,17 +14,23 @@ import { createServiceByWork } from "../../Utils/apiServiceByWork";
 import { registerPhotos } from "../../Utils/apiPhoto";
 import { toast } from "react-hot-toast";
 import ModalService from "../../Components/ModalService/ModalService";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
+
 
 const WorkOrderCreate = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [modalService, setModalService] = useState(false);
     const searchParams = new URLSearchParams(location.search);
+    const id_motorcycle = searchParams.get('id');
     const [selectedServices, setSelectedServices] = useState<
         (Service & { quantity: number })[]
     >([]);
-    const id_motorcycle = searchParams.get('id');
+
     const { user } = useAuth();
+    const { quill: quillDesc, quillRef: quillDescRef } = useQuill();
+    const { quill: quillRecom, quillRef: quillRecomRef } = useQuill();
 
     const [motorcycle, setMotorcycle] = useState<Motorcycle>()
     const [mechanics, setMechanics] = useState<Mechanic[]>([])
@@ -48,7 +54,17 @@ const WorkOrderCreate = () => {
 
     useEffect(() => {
         setValue("price", totalGeneral);
-    }, [totalGeneral, setValue]);
+        if (quillDesc) {
+            quillDesc.on("text-change", () => {
+                setValue("description", quillDesc.root.innerHTML);
+            });
+        }
+        if (quillRecom) {
+            quillRecom.on("text-change", () => {
+                setValue("recommendations", quillRecom.root.innerHTML);
+            });
+        }
+    }, [quillDesc, quillRecom, totalGeneral, setValue]);
 
     const handleSelectService = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = e.target.value;
@@ -230,27 +246,27 @@ const WorkOrderCreate = () => {
                 {/* Descripción */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Descripción</label>
-                    <textarea
-                        {...register("description", { required: "Descripcion es requerida" })}
-                        rows={3}
-                        className={`mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${errors.description ? "border-red-500 ring-red-400" : "border-gray-300 focus:ring-blue-500"
+                    <div
+                        ref={quillDescRef}
+                        className={`mt-1 bg-white border rounded-md shadow-sm ${errors.description ? "border-red-500" : "border-gray-300"
                             }`}
-                        placeholder="Descripción del trabajo"
                     />
-                    {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>}
+                    {errors.description && (
+                        <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>
+                    )}
                 </div>
 
                 {/* Recomendaciones */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Recomendaciones</label>
-                    <textarea
-                        {...register("recommendations", { required: "Recomendaciones son requeridas" })}
-                        rows={3}
-                        className={`mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${errors.recommendations ? "border-red-500 ring-red-400" : "border-gray-300 focus:ring-blue-500"
+                    <div
+                        ref={quillRecomRef}
+                        className={`mt-1 bg-white border rounded-md shadow-sm ${errors.recommendations ? "border-red-500" : "border-gray-300"
                             }`}
-                        placeholder="Recomendaciones para el cliente"
                     />
-                    {errors.recommendations && <p className="text-sm text-red-500 mt-1">{errors.recommendations.message}</p>}
+                    {errors.recommendations && (
+                        <p className="text-sm text-red-500 mt-1">{errors.recommendations.message}</p>
+                    )}
                 </div>
 
                 {/* Precio */}

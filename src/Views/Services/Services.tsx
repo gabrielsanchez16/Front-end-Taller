@@ -8,6 +8,7 @@ import { createService, deleteService, getAllServices } from "../../Utils/apiSer
 import { getAllTypes } from "../../Utils/apiType";
 import type { Service } from '../../Interface/Service';
 import toast from "react-hot-toast";
+import Loading from "../../Components/Loading/Loading";
 
 
 const Services = () => {
@@ -15,7 +16,7 @@ const Services = () => {
     const [service, setService] = useState<Service>()
     const [types, setTypes] = useState<Type[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null); // 👈 nuevo estado
-
+    const [loading, setLoading] = useState<boolean>(false);
 
     const { user } = useAuth();
 
@@ -49,12 +50,17 @@ const Services = () => {
 
 
     const fetchServices = async (id: string) => {
+        setLoading(true);
+
         try {
             const responseServices = await getAllServices(id);
             setServices(responseServices);
         } catch (error) {
             console.error("Error obteniendo Servicios:", error);
             toast.error("Hubo un error al obtener los Servicios.");
+        } finally {
+            setLoading(false);
+
         }
     };
 
@@ -67,6 +73,8 @@ const Services = () => {
 
 
     const onSubmit = async (data: Service) => {
+        setLoading(true);
+
         try {
             if (editingId) {
                 // actualizar
@@ -86,6 +94,9 @@ const Services = () => {
         } catch (error) {
             console.error("Error en el servicio:", error);
             toast.error(String(error));
+        } finally {
+            setLoading(false);
+
         }
     };
 
@@ -96,6 +107,8 @@ const Services = () => {
     };
 
     const handleDelete = async (id: string) => {
+        setLoading(true);
+
         try {
             const response = await deleteService(id);
             setServices((prev) => prev.filter((m) => m.id !== id));
@@ -103,6 +116,8 @@ const Services = () => {
         } catch (error) {
             console.error("Error borrando el servicio:", error);
             toast.error("Hubo un error al borrar el servicio.");
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -287,6 +302,11 @@ const Services = () => {
                     </tbody>
                 </table>
             </div>
+            {
+                loading && (
+                    <Loading />
+                )
+            }
         </div>
     )
 }

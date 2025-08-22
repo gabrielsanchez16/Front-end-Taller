@@ -5,6 +5,7 @@ import { login as LoginApi } from '../../Utils/api';
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import Loading from "../../Components/Loading/Loading";
 
 
 
@@ -12,10 +13,12 @@ export default function Login() {
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useReactHookForm<LoginForm>();
   const {login} = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
  const onSubmit = async (form: LoginForm) => {
+  setLoading(true);
   try {
     const data = await LoginApi(form);
     login(data.token);
@@ -33,6 +36,8 @@ export default function Login() {
         setError(null);
       }, 3000); // Limpiar el error después de 3 segundos
     }
+  } finally {
+    setLoading(false);
   }
 };
 
@@ -114,6 +119,11 @@ export default function Login() {
           </a>
         </p>
       </div>
+      {
+        loading && (
+          <Loading/>
+        )
+      }
     </div>
   );
 }

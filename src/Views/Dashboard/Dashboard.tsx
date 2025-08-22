@@ -24,6 +24,9 @@ const Dashboard = () => {
   const [services, setServices] = useState<ServiceByWork[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useAuth();
+  // 🔹 Estado para la paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Cantidad de filas por página
 
   const menu = [
     { id: 1, label: "Mecánicos", icon: <Wrench size={24} /> },
@@ -55,7 +58,10 @@ const Dashboard = () => {
     }
   }, [user])
 
-
+  // 🔹 Lógica de paginación
+  const totalPages = Math.ceil(services.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedServices = services.slice(startIndex, startIndex + itemsPerPage);
 
 
   return (
@@ -91,13 +97,11 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
-                {services.length > 0 ? (
-                  services.map((service) => (
+                {paginatedServices.length > 0 ? (
+                  paginatedServices.map((service) => (
                     <tr key={service.id}>
                       <td className="px-4 py-2">{service.name_service}</td>
                       <td className="px-4 py-2 text-center">{service.quantity_order}</td>
-
-                      {/* Precio unitario */}
                       <td className="px-4 py-2 text-center">
                         {new Intl.NumberFormat("es-CO", {
                           style: "currency",
@@ -105,8 +109,6 @@ const Dashboard = () => {
                           minimumFractionDigits: 0,
                         }).format(Number(service.price_unit))}
                       </td>
-
-                      {/* Precio total */}
                       <td className="px-4 py-2 text-center font-medium text-green-600">
                         {new Intl.NumberFormat("es-CO", {
                           style: "currency",
@@ -118,10 +120,7 @@ const Dashboard = () => {
                   ))
                 ) : (
                   <tr>
-                    <td
-                      colSpan={4}
-                      className="px-4 py-2 text-center text-gray-500 italic"
-                    >
+                    <td colSpan={4} className="px-4 py-2 text-center text-gray-500 italic">
                       🚀 No hay datos disponibles
                     </td>
                   </tr>
@@ -150,9 +149,31 @@ const Dashboard = () => {
               )}
             </table>
           </div>
+          {/* 🔹 Paginación */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-6">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md disabled:opacity-50"
+              >
+                Anterior
+              </button>
+              <span className="text-gray-600 text-sm">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md disabled:opacity-50"
+              >
+                Siguiente
+              </button>
+            </div>
+          )}
         </div>
 
-       
+
       </section>
 
 

@@ -5,6 +5,7 @@ import { createMechanics, deleteMechanic, editMechanic, getAllMechanics } from "
 import type { Mechanic } from "../../Interface/Mechanics";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import Loading from "../../Components/Loading/Loading";
 
 
 
@@ -12,7 +13,7 @@ import toast from "react-hot-toast";
 const Mechanics = () => {
     const [mechanics, setMechanics] = useState<Mechanic[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
-
+    const [loading, setLoading] = useState<boolean>(false);
     const { user } = useAuth();
 
     const {
@@ -24,12 +25,15 @@ const Mechanics = () => {
     } = useForm<Mechanic>();
 
     const fetchMechanics = async (id: string) => {
+        setLoading(true);
         try {
             const responseMechanics = await getAllMechanics(id);
             setMechanics(responseMechanics);
         } catch (error) {
             console.error("Error obteniendo mecánicos:", error);
             toast.error("Hubo un error al obtener los mecánicos.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -41,6 +45,7 @@ const Mechanics = () => {
 
 
     const onSubmit = async (data: Mechanic) => {
+        setLoading(true);
         try {
             if (editingId !== null) {
                 try {
@@ -56,9 +61,9 @@ const Mechanics = () => {
                 } catch (error) {
 
                     console.error("Error editando mecánico:", error);
-                   toast.error("Hubo un error al editar el mecánico.");
+                    toast.error("Hubo un error al editar el mecánico.");
                     return;
-                }
+                } 
 
             }
 
@@ -74,6 +79,8 @@ const Mechanics = () => {
         } catch (error) {
             console.error("Error creando mecánico:", error);
             toast.error("Hubo un error al crear el mecánico.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -86,6 +93,7 @@ const Mechanics = () => {
     };
 
     const handleDelete = async (id: string) => {
+        setLoading(true);
         try {
             const response = await deleteMechanic(id);
             setMechanics((prev) => prev.filter((m) => m.id !== id));
@@ -93,6 +101,8 @@ const Mechanics = () => {
         } catch (error) {
             console.error("Error borrando mecánico:", error);
             toast.error("Hubo un error al borrar el mecánico.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -177,6 +187,11 @@ const Mechanics = () => {
                     </tbody>
                 </table>
             </div>
+            {
+                loading && (
+                    <Loading />
+                )
+            }
         </div>
     );
 };

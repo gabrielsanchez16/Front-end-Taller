@@ -7,11 +7,13 @@ import { useAuth } from "../../hooks/useAuth";
 import { IdentificationIcon } from "@heroicons/react/24/outline";
 import type { Client } from "../../Interface/Clients";
 import toast from "react-hot-toast";
+import Loading from "../../Components/Loading/Loading";
 
 
 const Clients = () => {
     const [clients, setClients] = useState<Client[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const { user } = useAuth();
 
@@ -24,12 +26,17 @@ const Clients = () => {
     } = useForm<Client>();
 
     const fetchClients = async (id: string) => {
+        setLoading(true);
+
         try {
             const responseClients = await getAllClients(id);
             setClients(responseClients);
         } catch (error) {
             console.error("Error obteniendo clientes:", error);
             toast.error("Hubo un error al obtener los clientes.");
+        } finally {
+            setLoading(false);
+
         }
     };
 
@@ -41,14 +48,16 @@ const Clients = () => {
 
 
     const onSubmit = async (data: Client) => {
+        setLoading(true);
+
         try {
             if (editingId !== null) {
                 try {
                     data.id = editingId
                     const response = await editClient(data)
-                    setClients((prev) =>
-                        prev.map((m) => (m.id === editingId ? { ...m, name: data.name, email: data.email, phone: data.phone, identification: data.identification } : m))
-                    );
+                    if (user?.id) {
+                        fetchClients(user.id);
+                    }
                     setEditingId(null);
                     toast.success(response);
                     reset();
@@ -62,22 +71,19 @@ const Clients = () => {
 
             }
 
-            const response = await createClients(data);
-            const newMechanic: Client = {
-                id: response.id, // fallback si backend no devuelve ID
-                name: response.name,
-                phone: response.phone,
-                email: response.email,
-                identification: response.identification,
-                id_workshop: response.id_workshop
-            };
+            await createClients(data);
 
-            setClients((prev) => [...prev, newMechanic]);
+            if (user?.id) {
+                fetchClients(user.id);
+            }
+
             toast.success("Cliente creado exitosamente");
             reset();
         } catch (error) {
             console.error("Error creando cliente:", error);
             toast.error("Hubo un error al crear el cliente.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -93,6 +99,8 @@ const Clients = () => {
     };
 
     const handleDelete = async (id: string) => {
+        setLoading(true);
+
         try {
             const response = await deleteClient(id);
             setClients((prev) => prev.filter((m) => m.id !== id));
@@ -100,6 +108,9 @@ const Clients = () => {
         } catch (error) {
             console.error("Error borrando cliente:", error);
             toast.error("Hubo un error al borrar el cliente.");
+        } finally {
+            setLoading(false);
+
         }
     };
 
@@ -238,6 +249,11 @@ const Clients = () => {
                     </tbody>
                 </table>
             </div>
+            {
+                loading && (
+                    <Loading />
+                )
+            }
         </div>
     )
 }

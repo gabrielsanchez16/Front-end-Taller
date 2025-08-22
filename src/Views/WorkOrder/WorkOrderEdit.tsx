@@ -13,6 +13,8 @@ import { deletePhotos, registerPhotos } from "../../Utils/apiPhoto";
 import { toast } from "react-hot-toast";
 import type { ServiceByWork } from '../../Interface/ServiceByWork';
 import ModalService from "../../Components/ModalService/ModalService";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
 
 const WorkOrderEdit = () => {
 
@@ -44,6 +46,29 @@ const WorkOrderEdit = () => {
         getValues,
         formState: { errors },
     } = useForm<WorkOrder>();
+
+    const { quill: quillDescription, quillRef: quillRefDescription } = useQuill({
+        modules: {
+            toolbar: [
+                ["bold", "italic", "underline"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                ["clean"],
+            ],
+        },
+        theme: "snow",
+    });
+
+    // Editor para recomendaciones
+    const { quill: quillRecommendations, quillRef: quillRefRecommendations } = useQuill({
+        modules: {
+            toolbar: [
+                ["bold", "italic", "underline"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                ["clean"],
+            ],
+        },
+        theme: "snow",
+    });
 
 
     useEffect(() => {
@@ -91,10 +116,28 @@ const WorkOrderEdit = () => {
             if (order.date) {
                 setValue("date", new Date(order.date).toISOString().split("T")[0]);
             }
+            if (order.description && quillDescription) {
+                quillDescription.root.innerHTML = order.description;
+                setValue("description", order.description);
+            }
+            if (order.recommendations && quillRecommendations) {
+                quillRecommendations.root.innerHTML = order.recommendations;
+                setValue("recommendations", order.recommendations);
+            }
             setSelectedServices(order.service_by_workshops ?? []);
             setPreviewImages(order.photos.map(p => p.path).filter((p): p is string => Boolean(p)));
         }
-    }, [order, reset, setValue]);
+        if (quillDescription) {
+            quillDescription.on("text-change", () => {
+                setValue("description", quillDescription.root.innerHTML, { shouldValidate: true });
+            });
+        }
+        if (quillRecommendations) {
+            quillRecommendations.on("text-change", () => {
+                setValue("recommendations", quillRecommendations.root.innerHTML, { shouldValidate: true });
+            });
+        }
+    }, [quillDescription, quillRecommendations, order, reset, setValue]);
 
 
 
@@ -121,7 +164,7 @@ const WorkOrderEdit = () => {
                 price_total: selectedService.price_unit * qty,
                 price_unit: selectedService.price_unit,
                 quantity_order: qty,
-                id_workshop: user?.id ?? "" 
+                id_workshop: user?.id ?? ""
             });
 
             setSelectedServices(prev =>
@@ -280,7 +323,7 @@ const WorkOrderEdit = () => {
         if (modalService && user?.id) {
             fetchServices(user.id)
         }
-        
+
     }
 
 
@@ -310,27 +353,18 @@ const WorkOrderEdit = () => {
                 {/* Descripción */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Descripción</label>
-                    <textarea
-                        {...register("description", { required: "Descripcion es requerida" })}
-                        rows={3}
-                        className={`mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${errors.description ? "border-red-500 ring-red-400" : "border-gray-300 focus:ring-blue-500"
-                            }`}
-                        placeholder="Descripción del trabajo"
-                    />
-                    {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>}
+                    <div ref={quillRefDescription} className="h-40 mt-1 border rounded-md" />
+                    {errors.description && (
+                        <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>
+                    )}
                 </div>
 
-                {/* Recomendaciones */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Recomendaciones</label>
-                    <textarea
-                        {...register("recommendations", { required: "Recomendaciones son requeridas" })}
-                        rows={3}
-                        className={`mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${errors.recommendations ? "border-red-500 ring-red-400" : "border-gray-300 focus:ring-blue-500"
-                            }`}
-                        placeholder="Recomendaciones para el cliente"
-                    />
-                    {errors.recommendations && <p className="text-sm text-red-500 mt-1">{errors.recommendations.message}</p>}
+                    <div ref={quillRefRecommendations} className="h-40 mt-1 border rounded-md" />
+                    {errors.recommendations && (
+                        <p className="text-sm text-red-500 mt-1">{errors.recommendations.message}</p>
+                    )}
                 </div>
 
                 {/* Precio */}
@@ -545,9 +579,9 @@ const WorkOrderEdit = () => {
                 </div>
             </form>
             <ModalService
-                        isOpen={modalService}
-                        onClose={handleModal}
-                    />
+                isOpen={modalService}
+                onClose={handleModal}
+            />
 
             {loading && (
                 <div className="fixed inset-0 bg-black opacity-85 flex flex-col items-center justify-center z-50">

@@ -25,13 +25,11 @@ export const createWorkOrder = async (data:WorkOrder) => {
 
 export const getOrderById = async (id:string) =>{
     const apiUrl = import.meta.env.VITE_BACKEND_URL;
-    const token = localStorage.getItem("token"); // o donde tengas guardado tu token
 
     try {
         const response = await axios.get(`${apiUrl}/workOrder/getById/${id}`, {
             headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
             },
         });
 

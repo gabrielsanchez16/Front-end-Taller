@@ -13,6 +13,7 @@ import Services from './Views/Services/Services';
 import { Toaster } from "react-hot-toast";
 import WorkOrderEdit from './Views/WorkOrder/WorkOrderEdit';
 import Profile from './Views/Profile/Profile';
+import OrdenView from './Views/OrdenView/OrdenView';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/order/view" element={<OrdenView />} />
 
       {/* Rutas protegidas con layout */}
       <Route element={<ProtectedRoute />}>

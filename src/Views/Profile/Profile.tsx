@@ -3,6 +3,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { editWorkshop } from "../../Utils/apiWorkshop";
 import toast from "react-hot-toast";
 import { LockClosedIcon } from "@heroicons/react/24/outline";
+import Loading from "../../Components/Loading/Loading";
+import { useState } from "react";
 
 type FormData = {
     name: string;
@@ -15,6 +17,8 @@ type FormData = {
 
 const Profile = () => {
     const { user, logout } = useAuth();
+    const [loading, setLoading] = useState<boolean>(false);
+
 
     const {
         register,
@@ -34,6 +38,8 @@ const Profile = () => {
             toast.error("Usuario no autenticado");
             return;
         }
+        setLoading(true);
+
         try {
             await editWorkshop(data, user.id);
             toast.success("Perfil actualizado correctamente ✅");
@@ -41,6 +47,9 @@ const Profile = () => {
         } catch (error) {
             console.error(error);
             toast.error("Error al actualizar el perfil ❌");
+        } finally {
+            setLoading(false);
+
         }
     };
 
@@ -48,7 +57,7 @@ const Profile = () => {
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50 p-4">
             <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-32 relative">
+                <div className="bg-indigo-600 h-32 relative">
                     <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                         <img
                             src={user?.logo ? user.logo : `https://ui-avatars.com/api/?name=${user?.name}&background=2563eb&color=fff&size=100`}
@@ -145,7 +154,7 @@ const Profile = () => {
                                 Contraseña anterior
                             </label>
                             <input
-                                    {...register("passwordConfirmation")}
+                                {...register("passwordConfirmation")}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                                 type="password"
                                 placeholder="•••••••"
@@ -153,7 +162,7 @@ const Profile = () => {
                             <p className="text-gray-500 text-xs mt-1">
                                 Déjalo vacío si no quieres cambiarla
                             </p>
-                           
+
                         </div>
 
                         <div>
@@ -182,6 +191,11 @@ const Profile = () => {
                     </form>
                 </div>
             </div>
+            {
+                loading && (
+                    <Loading />
+                )
+            }
         </div>
     );
 };
