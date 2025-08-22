@@ -343,7 +343,7 @@ const Motorcycles = () => {
                                                                 className="px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
                                                                 onClick={() => {
                                                                     const baseUrl = window.location.origin;
-                                                                    const url = `${baseUrl}/order/view?id=${workOrder.id}&id_user=${user?.id}`;
+                                                                    const url = `${baseUrl}/order/view?id=${workOrder.id}&iduser=${user?.id}`;
                                                                     navigator.clipboard.writeText(url);
                                                                     toast.success("Link copiado al portapapeles")
                                                                 }}

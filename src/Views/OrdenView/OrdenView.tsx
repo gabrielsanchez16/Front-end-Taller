@@ -19,7 +19,7 @@ const OrdenView = () => {
         (ServiceByWork)[]
     >([]);
     const id_order = searchParams.get('id');
-    const user_id = searchParams.get('id_user');
+    const user_id = searchParams.get('iduser');
     const icons = [Wrench, Hammer, Cog];
 
     const [order, setOrder] = useState<WorkOrder>()
