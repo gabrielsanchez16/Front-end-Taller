@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import type { WorkOrder } from "../../Interface/WorkOrder";
 import { useLocation, useNavigate } from "react-router";
 import { getById } from "../../Utils/apiMotorcycles";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Motorcycle } from '../../Interface/Motorcycles';
 import { getAllMechanics } from "../../Utils/api";
 import { useAuth } from "../../hooks/useAuth";
@@ -14,7 +14,7 @@ import { createServiceByWork } from "../../Utils/apiServiceByWork";
 import { registerPhotos } from "../../Utils/apiPhoto";
 import { toast } from "react-hot-toast";
 import ModalService from "../../Components/ModalService/ModalService";
-import { useQuill } from "react-quilljs";
+import Quill from "quill";
 import "quill/dist/quill.snow.css";
 
 
@@ -29,8 +29,10 @@ const WorkOrderCreate = () => {
     >([]);
 
     const { user } = useAuth();
-    const { quill: quillDesc, quillRef: quillDescRef } = useQuill();
-    const { quill: quillRecom, quillRef: quillRecomRef } = useQuill();
+    const quillDescRef = useRef<HTMLDivElement>(null);
+    const quillRecomRef = useRef<HTMLDivElement>(null);
+    const quillDescInstance = useRef<Quill | null>(null);
+    const quillRecomInstance = useRef<Quill | null>(null);
 
     const [motorcycle, setMotorcycle] = useState<Motorcycle>()
     const [mechanics, setMechanics] = useState<Mechanic[]>([])
@@ -54,17 +56,26 @@ const WorkOrderCreate = () => {
 
     useEffect(() => {
         setValue("price", totalGeneral);
-        if (quillDesc) {
-            quillDesc.on("text-change", () => {
-                setValue("description", quillDesc.root.innerHTML);
+        if (quillDescRef.current && !quillDescInstance.current) {
+            quillDescInstance.current = new Quill(quillDescRef.current, {
+                theme: "snow",
+            });
+
+            quillDescInstance.current.on("text-change", () => {
+                setValue("description", quillDescInstance.current!.root.innerHTML);
             });
         }
-        if (quillRecom) {
-            quillRecom.on("text-change", () => {
-                setValue("recommendations", quillRecom.root.innerHTML);
+
+        if (quillRecomRef.current && !quillRecomInstance.current) {
+            quillRecomInstance.current = new Quill(quillRecomRef.current, {
+                theme: "snow",
+            });
+
+            quillRecomInstance.current.on("text-change", () => {
+                setValue("recommendations", quillRecomInstance.current!.root.innerHTML);
             });
         }
-    }, [quillDesc, quillRecom, totalGeneral, setValue]);
+    }, [quillRecomRef,quillDescRef,totalGeneral, setValue]);
 
     const handleSelectService = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = e.target.value;
@@ -250,7 +261,7 @@ const WorkOrderCreate = () => {
                         ref={quillDescRef}
                         className={`mt-1 bg-white border rounded-md shadow-sm ${errors.description ? "border-red-500" : "border-gray-300"
                             }`}
-                    />
+                    ></div>
                     {errors.description && (
                         <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>
                     )}
@@ -263,7 +274,7 @@ const WorkOrderCreate = () => {
                         ref={quillRecomRef}
                         className={`mt-1 bg-white border rounded-md shadow-sm ${errors.recommendations ? "border-red-500" : "border-gray-300"
                             }`}
-                    />
+                    ></div>
                     {errors.recommendations && (
                         <p className="text-sm text-red-500 mt-1">{errors.recommendations.message}</p>
                     )}
