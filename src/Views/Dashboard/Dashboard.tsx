@@ -16,6 +16,7 @@ import Loading from "../../Components/Loading/Loading";
 import { useAuth } from '../../hooks/useAuth';
 import { getServicesByWorkshop } from '../../Utils/apiServiceByWork';
 import type { ServiceByWork } from '../../Interface/ServiceByWork';
+import { AnimatePresence, motion } from 'framer-motion';
 
 
 const Dashboard = () => {
@@ -23,6 +24,7 @@ const Dashboard = () => {
   const [option, setOption] = useState<number>(1);
   const [services, setServices] = useState<ServiceByWork[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const { user } = useAuth();
   // 🔹 Estado para la paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -210,7 +212,17 @@ const Dashboard = () => {
               Aquí podrás ver todos los mecánicos registrados, así como crear
               nuevos, editar o eliminar los existentes.
             </p>
-            <img src="/tutorial/mecanicos.png" className="mt-4 rounded-lg shadow-md" alt="mecanicos" />
+            <motion.div
+              className="min-w-[140px] cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSelectedImage("/tutorial/mecanicos.png")}
+            >
+              <img
+                src="/tutorial/mecanicos.png"
+                alt={`foto-mecanica`}
+                className="rounded-xl  w-full object-cover shadow-md"
+              />
+            </motion.div>
           </div>
         )}
         {option === 2 && (
@@ -219,7 +231,18 @@ const Dashboard = () => {
               👥 Clientes
             </h2>
             <p className="text-gray-700">Aquí puedes gestionar todos tus clientes.</p>
-            <img src="/tutorial/Cliente.png" className="mt-4 rounded-lg shadow-md" alt="clientes" />
+            <motion.div
+              className="min-w-[140px] cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSelectedImage("/tutorial/Cliente.png")}
+            >
+              <img
+                src="/tutorial/Cliente.png"
+                alt={`foto-clientes`}
+                className="rounded-xl  w-full object-cover shadow-md"
+              />
+            </motion.div>
+            
           </div>
         )}
         {option === 3 && (
@@ -228,7 +251,17 @@ const Dashboard = () => {
               🏍️ Motocicletas
             </h2>
             <p className="text-gray-700">Visualiza y administra todas las motocicletas.</p>
-            <img src="/tutorial/motos.png" className="mt-4 rounded-lg shadow-md" alt="motos" />
+            <motion.div
+              className="min-w-[140px] cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSelectedImage("/tutorial/motos.png")}
+            >
+              <img
+                src="/tutorial/motos.png"
+                alt={`foto-motos`}
+                className="rounded-xl  w-full object-cover shadow-md"
+              />
+            </motion.div>
           </div>
         )}
         {option === 4 && (
@@ -237,7 +270,17 @@ const Dashboard = () => {
               🛠️ Servicios
             </h2>
             <p className="text-gray-700">Administra los servicios que ofrece tu taller.</p>
-            <img src="/tutorial/servicios.png" className="mt-4 rounded-lg shadow-md" alt="servicios" />
+            <motion.div
+              className="min-w-[140px] cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSelectedImage("/tutorial/servicios.png")}
+            >
+              <img
+                src="/tutorial/servicios.png"
+                alt={`foto-servicios`}
+                className="rounded-xl  w-full object-cover shadow-md"
+              />
+            </motion.div>
           </div>
         )}
         {option === 5 && (
@@ -252,8 +295,28 @@ const Dashboard = () => {
             <p className="text-gray-600 mt-4">
               En las imagenes funciona igual tanto para crear como para editar una orden
             </p>
-            <img src="/tutorial/orden.png" className="mt-4 rounded-lg shadow-md" alt="orden" />
-            <img src="/tutorial/orden2.png" className="mt-4 rounded-lg shadow-md" alt="orden2" />
+            <motion.div
+              className="min-w-[140px] cursor-pointer mb-4"
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSelectedImage("/tutorial/orden.png")}
+            >
+              <img
+                src="/tutorial/orden.png"
+                alt={`foto-orden`}
+                className="rounded-xl  w-full object-cover shadow-md"
+              />
+            </motion.div>
+            <motion.div
+              className="min-w-[140px] cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSelectedImage("/tutorial/orden2.png")}
+            >
+              <img
+                src="/tutorial/orden2.png"
+                alt={`foto-orden2`}
+                className="rounded-xl  w-full object-cover shadow-md"
+              />
+            </motion.div>
           </div>
         )}
         {option === 6 && (
@@ -264,8 +327,29 @@ const Dashboard = () => {
             <p className="text-gray-700">
               Revisa estadísticas clave y el rendimiento de tu taller.
             </p>
-            <img src="/tutorial/finanzas.png" className="mt-4 rounded-lg shadow-md" alt="finanzas" />
-            <img src="/tutorial/tutorial.png" className="mt-4 rounded-lg shadow-md" alt="tutorial" />
+            <motion.div
+              className="min-w-[140px] cursor-pointer mb-4"
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSelectedImage("/tutorial/finanzas.png")}
+            >
+              <img
+                src="/tutorial/finanzas.png"
+                alt={`foto-finanzas`}
+                className="rounded-xl  w-full object-cover shadow-md"
+              />
+            </motion.div>
+            <motion.div
+              className="min-w-[140px] cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSelectedImage("/tutorial/tutorial.png")}
+            >
+              <img
+                src="/tutorial/tutorial.png"
+                alt={`foto-tutorial`}
+                className="rounded-xl  w-full object-cover shadow-md"
+              />
+            </motion.div>
+
           </div>
         )}
         {option === 7 && (
@@ -298,6 +382,38 @@ const Dashboard = () => {
           </div>
         )}
       </section>
+      {/* Modal grande */}
+            <AnimatePresence>
+              {selectedImage && (
+                <motion.div
+                  className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setSelectedImage(null)}
+                >
+                  <motion.img
+                    key={selectedImage}
+                    src={selectedImage}
+                    alt="Vista ampliada"
+                    className="max-h-[90%] max-w-[90%] rounded-2xl shadow-lg"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={(e) => e.stopPropagation()} // Evita que el modal se cierre al dar click en la imagen
+                  />
+      
+                  {/* Botón cerrar */}
+                  <button
+                    className="absolute top-6 right-6 text-white bg-red-500 hover:bg-red-600 rounded-full p-2 shadow-lg"
+                    onClick={() => setSelectedImage(null)}
+                  >
+                    ✖
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
       {
         loading && (
           <Loading />

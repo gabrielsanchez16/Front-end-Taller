@@ -128,7 +128,7 @@ const OrdenView = () => {
                                     rotate: [0, 15, -15, 0]
                                 }}
                                 transition={{ duration: 6 + (i % 5), repeat: Infinity }}
-                                className="absolute text-white/20"
+                                className="absolute text-white/60"
                                 style={{
                                     top: `${Math.random() * 100}%`,
                                     left: `${Math.random() * 100}%`,
@@ -151,7 +151,7 @@ const OrdenView = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="relative rounded-2xl p-6 sm:p-8 space-y-6 bg-green-100/70 border border-blue-500/30 shadow-lg shadow-blue-500/20"
+                        className="relative rounded-2xl p-6 sm:p-8 space-y-6 bg-[#e6ffe6d1] border border-blue-500/30 shadow-lg shadow-blue-500/20"
 
 
                     >
@@ -244,7 +244,7 @@ const OrdenView = () => {
                                 <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800 mb-3">
                                     <ClipboardList className="w-5 h-5 text-purple-500" /> Servicios incluidos
                                 </h2>
-                                <div className="overflow-hidden rounded-2xl border border-white/10 shadow-lg backdrop-blur-sm bg-white/5">
+                                <div className="overflow-scroll rounded-2xl border border-white/10 shadow-lg backdrop-blur-sm bg-white/5">
                                     <table className="w-full text-sm text-gray-300">
                                         <thead className="bg-gradient-to-r from-purple-700/60 to-indigo-700/60 text-gray-100">
                                             <tr>
