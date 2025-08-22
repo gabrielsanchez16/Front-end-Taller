@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import type { WorkOrder } from "../../Interface/WorkOrder";
 import { useLocation, useNavigate } from "react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAllMechanics } from "../../Utils/api";
 import { useAuth } from "../../hooks/useAuth";
 import type { Mechanic } from "../../Interface/Mechanics";
@@ -13,7 +13,7 @@ import { deletePhotos, registerPhotos } from "../../Utils/apiPhoto";
 import { toast } from "react-hot-toast";
 import type { ServiceByWork } from '../../Interface/ServiceByWork';
 import ModalService from "../../Components/ModalService/ModalService";
-import { useQuill } from "react-quilljs";
+import Quill from "quill";
 import "quill/dist/quill.snow.css";
 
 const WorkOrderEdit = () => {
@@ -47,28 +47,10 @@ const WorkOrderEdit = () => {
         formState: { errors },
     } = useForm<WorkOrder>();
 
-    const { quill: quillDescription, quillRef: quillRefDescription } = useQuill({
-        modules: {
-            toolbar: [
-                ["bold", "italic", "underline"],
-                [{ list: "ordered" }, { list: "bullet" }],
-                ["clean"],
-            ],
-        },
-        theme: "snow",
-    });
-
-    // Editor para recomendaciones
-    const { quill: quillRecommendations, quillRef: quillRefRecommendations } = useQuill({
-        modules: {
-            toolbar: [
-                ["bold", "italic", "underline"],
-                [{ list: "ordered" }, { list: "bullet" }],
-                ["clean"],
-            ],
-        },
-        theme: "snow",
-    });
+    const quillDescRef = useRef<HTMLDivElement>(null);
+    const quillRecomRef = useRef<HTMLDivElement>(null);
+    const quillDescInstance = useRef<Quill | null>(null);
+    const quillRecomInstance = useRef<Quill | null>(null);
 
 
     useEffect(() => {
@@ -111,33 +93,41 @@ const WorkOrderEdit = () => {
     };
 
     useEffect(() => {
+        // Inicializar Quill si no existe
+        if (quillDescRef.current && !quillDescInstance.current) {
+            quillDescInstance.current = new Quill(quillDescRef.current, { theme: "snow" });
+            quillDescInstance.current.on("text-change", () => {
+                setValue("description", quillDescInstance.current!.root.innerHTML);
+            });
+        }
+
+        if (quillRecomRef.current && !quillRecomInstance.current) {
+            quillRecomInstance.current = new Quill(quillRecomRef.current, { theme: "snow" });
+            quillRecomInstance.current.on("text-change", () => {
+                setValue("recommendations", quillRecomInstance.current!.root.innerHTML);
+            });
+        }
+
+        // Cuando la orden llega del backend, setear contenido en Quill
         if (order && order.photos) {
-            reset(order); // carga todos los valores en react-hook-form
+            reset(order); // carga valores en react-hook-form
             if (order.date) {
                 setValue("date", new Date(order.date).toISOString().split("T")[0]);
             }
-            if (order.description && quillDescription) {
-                quillDescription.root.innerHTML = order.description;
-                setValue("description", order.description);
+
+            if (order.description && quillDescInstance.current) {
+                quillDescInstance.current.root.innerHTML = order.description;
             }
-            if (order.recommendations && quillRecommendations) {
-                quillRecommendations.root.innerHTML = order.recommendations;
-                setValue("recommendations", order.recommendations);
+            if (order.recommendations && quillRecomInstance.current) {
+                quillRecomInstance.current.root.innerHTML = order.recommendations;
             }
+
             setSelectedServices(order.service_by_workshops ?? []);
-            setPreviewImages(order.photos.map(p => p.path).filter((p): p is string => Boolean(p)));
+            setPreviewImages(
+                order.photos.map(p => p.path).filter((p): p is string => Boolean(p))
+            );
         }
-        if (quillDescription) {
-            quillDescription.on("text-change", () => {
-                setValue("description", quillDescription.root.innerHTML, { shouldValidate: true });
-            });
-        }
-        if (quillRecommendations) {
-            quillRecommendations.on("text-change", () => {
-                setValue("recommendations", quillRecommendations.root.innerHTML, { shouldValidate: true });
-            });
-        }
-    }, [quillDescription, quillRecommendations, order, reset, setValue]);
+    }, [order, reset, setValue]);
 
 
 
@@ -353,15 +343,24 @@ const WorkOrderEdit = () => {
                 {/* Descripción */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Descripción</label>
-                    <div ref={quillRefDescription} className="h-40 mt-1 border rounded-md" />
+                    <div
+                        ref={quillDescRef}
+                        className={`mt-1 bg-white border rounded-md shadow-sm ${errors.description ? "border-red-500" : "border-gray-300"
+                            }`}
+                    ></div>
                     {errors.description && (
                         <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>
                     )}
                 </div>
 
+                {/* Recomendaciones */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Recomendaciones</label>
-                    <div ref={quillRefRecommendations} className="h-40 mt-1 border rounded-md" />
+                    <div
+                        ref={quillRecomRef}
+                        className={`mt-1 bg-white border rounded-md shadow-sm ${errors.recommendations ? "border-red-500" : "border-gray-300"
+                            }`}
+                    ></div>
                     {errors.recommendations && (
                         <p className="text-sm text-red-500 mt-1">{errors.recommendations.message}</p>
                     )}
