@@ -43,7 +43,6 @@ const Dashboard = () => {
     try {
       const responseServices = await getServicesByWorkshop(id);
       setServices(responseServices);
-      console.log(responseServices)
     } catch (error) {
       console.error("Error obteniendo servicios:", error);
       toast.error("Hubo un error al obtener los servicios.");
