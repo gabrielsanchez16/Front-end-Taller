@@ -14,6 +14,7 @@ import { Toaster } from "react-hot-toast";
 import WorkOrderEdit from './Views/WorkOrder/WorkOrderEdit';
 import Profile from './Views/Profile/Profile';
 import OrdenView from './Views/OrdenView/OrdenView';
+import InstallPrompt from './Components/PWA/InstallModal';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
     <Toaster position="top-right" toastOptions={{
       duration:5000
     }}/>
+    <InstallPrompt/>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
