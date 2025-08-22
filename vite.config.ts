@@ -10,8 +10,9 @@ export default defineConfig({
     include: ["quill", "react-quilljs"]
   },
   build: {
+    outDir: "dist", // carpeta de salida
     commonjsOptions: {
-      include: [/quill/, /react-quilljs/, /node_modules/]
-    }
-  }
+      include: [/quill/, /react-quilljs/, /node_modules/], // transformar CommonJS a ESM
+    },
+  },
 })
