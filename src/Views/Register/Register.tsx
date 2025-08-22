@@ -3,7 +3,7 @@ import { LockClosedIcon, EnvelopeIcon, UserIcon, PhoneIcon } from "@heroicons/re
 import { useForm as useReactHookForm } from "react-hook-form";
 import { register as RegisterApi } from '../../Utils/api';
 import type { RegisterForm } from "../../Interface/auth";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Loading from "../../Components/Loading/Loading";
 
 
@@ -52,7 +52,7 @@ const [loading, setLoading] = useState<boolean>(false);
       ></div>
 
       {/* Formulario */}
-      <div className="relative z-10 w-full max-w-md bg-[#111827] shadow-xl rounded-2xl p-8 border border-gray-200">
+      <div className="relative z-10 w-full max-w-md mx-4 bg-[#111827] shadow-xl rounded-2xl p-8 border border-gray-200">
         <h2 className="text-3xl font-bold text-center text-white mb-8">
           Crear Cuenta
         </h2>
@@ -193,9 +193,9 @@ const [loading, setLoading] = useState<boolean>(false);
 
         <p className="text-center text-sm text-white mt-6">
           ¿Ya tienes una cuenta?{" "}
-          <a href="/login" className="text-blue-400 font-medium hover:underline">
+          <Link to="/login" className="text-blue-400 font-medium hover:underline">
             Inicia sesión
-          </a>
+          </Link>
         </p>
       </div>
       {

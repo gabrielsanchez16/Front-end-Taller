@@ -32,9 +32,9 @@ export default defineConfig({
         "lang": "es-ES",
         "name": "System Workshop",
         "short_name": "SystemWorkshop",
-        "start_url": "/login",
+        "start_url": "/",
         "description": "Sistema de gestion de talleres de motos",
-        // "id": "https://www.systemworkshop.shop"
+         "id": "/"
       }
     })
   ],

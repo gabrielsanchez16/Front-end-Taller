@@ -47,54 +47,66 @@ const NotSubscribed = () => {
 
 
   return (
-    <div className="min-h-screen  flex items-center relative bg-cover bg-center justify-center px-4 py-10"
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-10 bg-cover bg-center"
       style={{
         backgroundImage: `url('https://formaelx.com/media/images/cursos_cursos/curso_area_163.png')`,
-      }}>
-      <div className="w-full text-center absolute z-10 bg-black"
-        style={{
-          backgroundColor: "#00000091",
-          height: "100vh",
-          width: "100vw",
-          padding: "2rem",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          backdropFilter: "blur(5px)",
-        }}>
-        <h1 className="text-3xl font-bold text-white mb-6">
+      }}
+    >
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 z-10 flex flex-col justify-center items-center px-4 py-10 bg-black/70 backdrop-blur-sm"
+      />
+
+
+      <div className="relative z-10 w-full max-w-6xl text-center">
+        <h1 className="text-2xl md:text-4xl font-bold text-white mb-4">
           Tu cuenta no está suscrita
         </h1>
-        <p className="text-white mb-12">Elige un plan para continuar</p>
+        <p className="text-white mb-10 text-base md:text-lg">
+          Elige un plan para continuar
+        </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Grid responsivo */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {plans.map((plan, i) => (
             <div
               key={i}
-              className={`rounded-2xl h-fit p-6 shadow-lg transition transform hover:scale-105 ${plan.popular
-                  ? "bg-white border-4 border-blue-600"
-                  : "bg-white border border-gray-200"
+              className={`rounded-2xl h-full p-6 shadow-lg transition transform hover:scale-105 flex flex-col justify-between ${plan.popular
+                ? "bg-white border-4 border-blue-600"
+                : "bg-white border border-gray-200"
                 }`}
             >
               {plan.popular && (
-                <div className="text-sm text-white bg-blue-600 px-2 py-1 rounded-full w-fit mx-auto mb-4">
+                <div className="text-xs md:text-sm text-white bg-blue-600 px-3 py-1 rounded-full w-fit mx-auto mb-4">
                   Más popular
                 </div>
               )}
 
-              <h2 className="text-xl font-semibold text-gray-800">{plan.name}</h2>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{plan.price}</p>
-              <p className="text-gray-600 mt-2">{plan.description}</p>
+              <div>
+                <h2 className="text-lg md:text-xl font-semibold text-gray-800">
+                  {plan.name}
+                </h2>
+                <p className="text-2xl md:text-3xl font-bold text-gray-900 mt-2">
+                  {plan.price}
+                </p>
+                <p className="text-gray-600 mt-2 text-sm md:text-base">
+                  {plan.description}
+                </p>
 
-              <ul className="text-left mt-4 space-y-2 text-gray-700">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    ✅ <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+                <ul className="text-left mt-4 space-y-2 text-gray-700 text-sm md:text-base">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      ✅ <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-              <button className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition" onClick={() => handleWhatsApp(plan)}>
+              <button
+                className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+                onClick={() => handleWhatsApp(plan)}
+              >
                 Suscribirme
               </button>
             </div>
@@ -102,6 +114,7 @@ const NotSubscribed = () => {
         </div>
       </div>
     </div>
+
   );
 };
 

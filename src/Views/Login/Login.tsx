@@ -3,7 +3,7 @@ import { useForm as useReactHookForm } from "react-hook-form";
 import type { LoginForm } from "../../Interface/auth";
 import { login as LoginApi } from '../../Utils/api';
 import { useAuth } from "../../hooks/useAuth";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import Loading from "../../Components/Loading/Loading";
 
@@ -49,7 +49,7 @@ export default function Login() {
         style={{ backgroundImage: `url(/mecanicoBack.png)` }}
       ></div>
 
-      <div className="relative z-10 w-full max-w-md bg-[#111827] shadow-xl rounded-2xl p-8 border border-gray-200">
+      <div className="relative z-10 w-full max-w-md mx-4 bg-[#111827] shadow-xl rounded-2xl p-8 border border-gray-200">
         <h2 className="text-3xl font-bold text-center text-white mb-8">Iniciar Sesión</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -114,9 +114,9 @@ export default function Login() {
 
         <p className="text-center text-sm text-white mt-6">
           ¿No tienes cuenta?{" "}
-          <a href="/register" className="text-blue-400 font-medium hover:underline">
+          <Link to="/register" className="text-blue-400 font-medium hover:underline">
             Regístrate
-          </a>
+          </Link>
         </p>
       </div>
       {
