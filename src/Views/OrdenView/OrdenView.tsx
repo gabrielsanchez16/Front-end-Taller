@@ -46,14 +46,14 @@ const OrdenView = () => {
 
     useEffect(() => {
         if (order && order.photos) {
-            setLoading(true)
+          
             reset(order); // carga todos los valores en react-hook-form
             if (order.date) {
                 setValue("date", new Date(order.date).toISOString().split("T")[0]);
             }
             setSelectedServices(order.service_by_workshops ?? []);
             setPreviewImages(order.photos.map(p => p.path).filter((p): p is string => Boolean(p)));
-            setLoading(false)
+            
         }
     }, [order, reset, setValue]);
 
@@ -65,6 +65,7 @@ const OrdenView = () => {
     }
 
     const fetchOrder = async (id: string) => {
+        setLoading(true)
         try {
             const responseOrder = await getOrderById(id);
             setOrder(responseOrder);
@@ -78,6 +79,8 @@ const OrdenView = () => {
         } catch (error) {
             console.error("Error obteniendo la orden:", error);
             toast.error("Hubo un error al obtener la orden.");
+        }finally{
+            setLoading(false)
         }
     }
 
