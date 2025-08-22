@@ -6,6 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import Loading from "../../Components/Loading/Loading";
+import { Title } from "react-head";
 
 
 
@@ -44,6 +45,7 @@ export default function Login() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-black">
+      <Title>Sistema de Talleres de Motos</Title>
       <div
         className="absolute inset-0 bg-cover bg-center opacity-20"
         style={{ backgroundImage: `url(/mecanicoBack.png)` }}

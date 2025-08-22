@@ -5,6 +5,7 @@ import { register as RegisterApi } from '../../Utils/api';
 import type { RegisterForm } from "../../Interface/auth";
 import { Link, useNavigate } from "react-router";
 import Loading from "../../Components/Loading/Loading";
+import { Title } from "react-head";
 
 
 
@@ -43,6 +44,7 @@ const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-black">
+      <Title>Sistema de Talleres de Motos</Title>
       {/* Imagen de fondo con desenfoque suave */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-20"

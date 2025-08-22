@@ -17,6 +17,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { getServicesByWorkshop } from '../../Utils/apiServiceByWork';
 import type { ServiceByWork } from '../../Interface/ServiceByWork';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Meta, Title, Link as Link2 } from 'react-head';
 
 
 const Dashboard = () => {
@@ -67,6 +68,19 @@ const Dashboard = () => {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
+      <Title>Sistema de Talleres de Motos</Title>
+      <Meta name="description" content="Digitaliza tu taller de motos y controla clientes, trabajos y facturación." />
+      <Meta name="keywords" content="taller de motos, software de talleres, gestión de motos, sistema de talleres" />
+
+      {/* Open Graph */}
+      <Meta property="og:title" content="Sistema de Gestión de Talleres de Motos" />
+      <Meta property="og:description" content="Optimiza tu taller con nuestro software digital." />
+      <Meta property="og:image" content="https://www.systemworkshop.shop/logo.png" />
+      <Meta property="og:url" content="https://www.systemworkshop.shop/" />
+
+      {/* Favicon o canonical */}
+      <Link2 rel="icon" href="https://www.systemworkshop.shop/mecanicoIcon.svg" />
+      <Link2 rel="canonical" href="https://www.systemworkshop.shop/" />
       <h1 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8">
         Bienvenido al sistema de gestión para tu taller
       </h1>
@@ -242,7 +256,7 @@ const Dashboard = () => {
                 className="rounded-xl  w-full object-cover shadow-md"
               />
             </motion.div>
-            
+
           </div>
         )}
         {option === 3 && (
@@ -383,37 +397,37 @@ const Dashboard = () => {
         )}
       </section>
       {/* Modal grande */}
-            <AnimatePresence>
-              {selectedImage && (
-                <motion.div
-                  className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setSelectedImage(null)}
-                >
-                  <motion.img
-                    key={selectedImage}
-                    src={selectedImage}
-                    alt="Vista ampliada"
-                    className="max-h-[90%] max-w-[90%] rounded-2xl shadow-lg"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    onClick={(e) => e.stopPropagation()} // Evita que el modal se cierre al dar click en la imagen
-                  />
-      
-                  {/* Botón cerrar */}
-                  <button
-                    className="absolute top-6 right-6 text-white bg-red-500 hover:bg-red-600 rounded-full p-2 shadow-lg"
-                    onClick={() => setSelectedImage(null)}
-                  >
-                    ✖
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)}
+          >
+            <motion.img
+              key={selectedImage}
+              src={selectedImage}
+              alt="Vista ampliada"
+              className="max-h-[90%] max-w-[90%] rounded-2xl shadow-lg"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()} // Evita que el modal se cierre al dar click en la imagen
+            />
+
+            {/* Botón cerrar */}
+            <button
+              className="absolute top-6 right-6 text-white bg-red-500 hover:bg-red-600 rounded-full p-2 shadow-lg"
+              onClick={() => setSelectedImage(null)}
+            >
+              ✖
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {
         loading && (
           <Loading />
