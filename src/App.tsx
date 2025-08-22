@@ -15,6 +15,7 @@ import WorkOrderEdit from './Views/WorkOrder/WorkOrderEdit';
 import Profile from './Views/Profile/Profile';
 import OrdenView from './Views/OrdenView/OrdenView';
 import InstallPrompt from './Components/PWA/InstallModal';
+import Home from './Views/Landing/Home';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/order/view" element={<OrdenView />} />
+      <Route path="/home" element={<Home />} />
 
       {/* Rutas protegidas con layout */}
       <Route element={<ProtectedRoute />}>
