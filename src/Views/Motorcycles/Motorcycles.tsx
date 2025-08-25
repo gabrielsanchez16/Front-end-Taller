@@ -309,7 +309,7 @@ const Motorcycles = () => {
                                                 motorcycle.work_orders.map((workOrder: WorkOrder, key: number) => (
                                                     <div
                                                         key={key}
-                                                        className="relative group flex items-center gap-2 bg-gray-50 rounded-md px-2 py-1 hover:bg-gray-100"
+                                                        className="relative flex items-center gap-2 bg-gray-50 rounded-md px-2 py-1 hover:bg-gray-100"
                                                     >
                                                         {/* Enlace */}
                                                         <Link
@@ -323,8 +323,7 @@ const Motorcycles = () => {
                                                         <div
                                                             className="
             flex gap-2
-            opacity-100 sm:opacity-0 sm:group-hover:opacity-100
-            transition-opacity
+            
           " 
                                                         >
                                                             <button

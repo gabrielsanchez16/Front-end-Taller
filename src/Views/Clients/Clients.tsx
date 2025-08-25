@@ -107,7 +107,7 @@ const Clients = () => {
             toast.success(response);
         } catch (error) {
             console.error("Error borrando cliente:", error);
-            toast.error("Hubo un error al borrar el cliente.");
+            toast.error(error instanceof Error ? error.message : String(error));
         } finally {
             setLoading(false);
 

@@ -56,13 +56,27 @@ const WorkOrderCreate = () => {
 
     useEffect(() => {
         setValue("price", totalGeneral);
+
         if (quillDescRef.current && !quillDescInstance.current) {
             quillDescInstance.current = new Quill(quillDescRef.current, {
                 theme: "snow",
             });
 
-            quillDescInstance.current.on("text-change", () => {
+            let isComposing = false;
+
+            // Manejo de composición (fix para Motorola / Oppo)
+            quillDescInstance.current.root.addEventListener("compositionstart", () => {
+                isComposing = true;
+            });
+            quillDescInstance.current.root.addEventListener("compositionend", () => {
+                isComposing = false;
                 setValue("description", quillDescInstance.current!.root.innerHTML);
+            });
+
+            quillDescInstance.current.on("text-change", () => {
+                if (!isComposing) {
+                    setValue("description", quillDescInstance.current!.root.innerHTML);
+                }
             });
         }
 
@@ -71,11 +85,24 @@ const WorkOrderCreate = () => {
                 theme: "snow",
             });
 
-            quillRecomInstance.current.on("text-change", () => {
+            let isComposing = false;
+
+            quillRecomInstance.current.root.addEventListener("compositionstart", () => {
+                isComposing = true;
+            });
+            quillRecomInstance.current.root.addEventListener("compositionend", () => {
+                isComposing = false;
                 setValue("recommendations", quillRecomInstance.current!.root.innerHTML);
             });
+
+            quillRecomInstance.current.on("text-change", () => {
+                if (!isComposing) {
+                    setValue("recommendations", quillRecomInstance.current!.root.innerHTML);
+                }
+            });
         }
-    }, [quillRecomRef,quillDescRef,totalGeneral, setValue]);
+    }, [quillRecomRef, quillDescRef, totalGeneral, setValue]);
+
 
     const handleSelectService = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = e.target.value;

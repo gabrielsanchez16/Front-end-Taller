@@ -96,30 +96,64 @@ const WorkOrderEdit = () => {
         // Inicializar Quill si no existe
         if (quillDescRef.current && !quillDescInstance.current) {
             quillDescInstance.current = new Quill(quillDescRef.current, { theme: "snow" });
-            quillDescInstance.current.on("text-change", () => {
+
+            let isComposing = false;
+
+            quillDescInstance.current.root.addEventListener("compositionstart", () => {
+                isComposing = true;
+            });
+
+            quillDescInstance.current.root.addEventListener("compositionend", () => {
+                isComposing = false;
                 setValue("description", quillDescInstance.current!.root.innerHTML);
+            });
+
+            quillDescInstance.current.on("text-change", () => {
+                if (!isComposing) {
+                    setValue("description", quillDescInstance.current!.root.innerHTML);
+                }
             });
         }
 
         if (quillRecomRef.current && !quillRecomInstance.current) {
             quillRecomInstance.current = new Quill(quillRecomRef.current, { theme: "snow" });
-            quillRecomInstance.current.on("text-change", () => {
+
+            let isComposing = false;
+
+            quillRecomInstance.current.root.addEventListener("compositionstart", () => {
+                isComposing = true;
+            });
+
+            quillRecomInstance.current.root.addEventListener("compositionend", () => {
+                isComposing = false;
                 setValue("recommendations", quillRecomInstance.current!.root.innerHTML);
+            });
+
+            quillRecomInstance.current.on("text-change", () => {
+                if (!isComposing) {
+                    setValue("recommendations", quillRecomInstance.current!.root.innerHTML);
+                }
             });
         }
 
         // Cuando la orden llega del backend, setear contenido en Quill
         if (order && order.photos) {
             reset(order); // carga valores en react-hook-form
+
             if (order.date) {
                 setValue("date", new Date(order.date).toISOString().split("T")[0]);
             }
 
             if (order.description && quillDescInstance.current) {
-                quillDescInstance.current.root.innerHTML = order.description;
+                if (quillDescInstance.current.root.innerHTML !== order.description) {
+                    quillDescInstance.current.root.innerHTML = order.description;
+                }
             }
+
             if (order.recommendations && quillRecomInstance.current) {
-                quillRecomInstance.current.root.innerHTML = order.recommendations;
+                if (quillRecomInstance.current.root.innerHTML !== order.recommendations) {
+                    quillRecomInstance.current.root.innerHTML = order.recommendations;
+                }
             }
 
             setSelectedServices(order.service_by_workshops ?? []);
@@ -128,6 +162,7 @@ const WorkOrderEdit = () => {
             );
         }
     }, [order, reset, setValue]);
+
 
 
 

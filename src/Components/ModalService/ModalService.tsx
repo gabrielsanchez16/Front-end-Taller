@@ -25,7 +25,7 @@ const ModalService = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
         brand: "",
         quantity: 1,
         id_type: "",
-        id_workshop: "",
+        id_workshop: user?.id || "",
     };
 
     const {

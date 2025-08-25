@@ -78,7 +78,7 @@ const Mechanics = () => {
             reset();
         } catch (error) {
             console.error("Error creando mecánico:", error);
-            toast.error("Hubo un error al crear el mecánico.");
+            toast.error(error instanceof Error ? error.message : String(error));
         } finally {
             setLoading(false);
         }
@@ -100,7 +100,7 @@ const Mechanics = () => {
             toast.success(response);
         } catch (error) {
             console.error("Error borrando mecánico:", error);
-            toast.error("Hubo un error al borrar el mecánico.");
+            toast.error(error instanceof Error ? error.message : String(error));
         } finally {
             setLoading(false);
         }

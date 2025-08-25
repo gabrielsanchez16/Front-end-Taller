@@ -108,7 +108,7 @@ const OrdenView = () => {
                 initial={{ backgroundPosition: "0% 50%" }}
                 animate={{ backgroundPosition: "100% 50%" }}
                 transition={{ duration: 12, repeat: Infinity, repeatType: "reverse" }}
-                className="relative bg-gradient-to-r from-[#111827] via-[#1f2937] to-[#374151] bg-[length:200%_200%] p-6 shadow-lg overflow-hidden"
+                className="relative bg-gradient-to-r min-h-screen from-[#111827] via-[#1f2937] to-[#374151] bg-[length:200%_200%] p-6 shadow-lg overflow-hidden"
             >
                 {/* Glow overlay */}
                 <div className="absolute inset-0">
@@ -151,7 +151,7 @@ const OrdenView = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="relative rounded-2xl p-6 sm:p-8 space-y-6 bg-[#e6ffe6d1] border border-blue-500/30 shadow-lg shadow-blue-500/20"
+                        className="relative rounded-2xl p-6 sm:p-8 space-y-6 bg-[#e6ffe6e7] z-10 border border-blue-500/30 shadow-lg shadow-blue-500/20"
 
 
                     >
